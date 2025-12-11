@@ -4,10 +4,12 @@ import UIKit
 final class NameFieldManager: NSObject {
     private let nameField: UITextField
     private var delegate: NameFieldManagerDelegate?
+    private var presenter: NewTrackerPresenterProtocol?
     private let placeholderText = "Введите название трекера"
 
-    init(nameField: UITextField) {
+    init(nameField: UITextField, presenter: NewTrackerPresenterProtocol) {
         self.nameField = nameField
+        self.presenter = presenter
         super.init()
 
         setupNameField()
@@ -51,7 +53,8 @@ extension NameFieldManager: UITextFieldDelegate {
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        // TODO: --
+        guard let name = textField.text else { return }
+        presenter?.updateName(name: name)
     }
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {

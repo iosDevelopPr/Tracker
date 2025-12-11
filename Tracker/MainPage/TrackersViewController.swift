@@ -49,7 +49,7 @@ final class TrackersViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.backgroundColor = UIColor(resource: .trackerLightGray)
-        datePicker.tintColor = UIColor(hex: "#000000")
+        datePicker.tintColor = UIColor(resource: .trackerBackgroundBlack)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         datePicker.layer.cornerRadius = 8
@@ -77,19 +77,20 @@ final class TrackersViewController: UIViewController {
         return collection
     } ()
     
+    // MARK: - Properties
     private var collectionManager: CollectionManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(resource: .trackerWhite)
         self.setupNavigationBar()
         self.setupViewController()
     }
 
     // MARK: - Actions
     @objc private func didTapPlusButton(_ sender: Any) {
-        let newTrackerViewController = NewTrackerViewController()
+        let newTrackerViewController = NewTrackerViewController(presenter: NewTrackerPresenter())
+        newTrackerViewController.delegate = self
         newTrackerViewController.modalPresentationStyle = .pageSheet
         present(newTrackerViewController, animated: true)
     }
@@ -97,13 +98,19 @@ final class TrackersViewController: UIViewController {
     @objc private func dateChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         datePickerLabel.text = selectedDate.toShortDateString()
+        
+        collectionManager?.updateCategories()
+        updateUI()
     }
-
+    
+    // MARK: -
     private func setupNavigationBar() {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     private func setupViewController() {
+        view.backgroundColor = UIColor(resource: .trackerWhite)
+        
         setupPlusButton()
         setupTrackerLabel()
         setupSearchBar()
@@ -112,7 +119,7 @@ final class TrackersViewController: UIViewController {
         setupDatePicker()
         setupTrackerCollection()
         
-        setCollectionHidden(hidden: false)
+        updateUI()
     }
     
     private func setupPlusButton() {
@@ -190,7 +197,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setupTrackerCollection() {
-        collectionManager = CollectionManager(collectionView: trackerCollection)
+        collectionManager = CollectionManager(collectionView: trackerCollection, picker: datePicker)
         
         view.addSubview(trackerCollection)
 
@@ -200,12 +207,25 @@ final class TrackersViewController: UIViewController {
             trackerCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
             trackerCollection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-
+    }
+    
+    private func updateUI() {
+        let day = Schedule.dayOfWeek(date: datePicker.date)
+        let hasTrackers = TrackersManager.shared.hasTrackers(day: day)
+        setCollectionHidden(hidden: !hasTrackers)
     }
     
     private func setCollectionHidden(hidden: Bool) {
         trackerCollection.isHidden = hidden
         dizzyImage.isHidden = !hidden
         dizzyLabel.isHidden = !hidden
+        trackerCollection.reloadData()
+    }
+}
+
+extension TrackersViewController: NewTrackerViewControllerDelegate {
+    func updateMainView() {
+        collectionManager?.updateCategories()
+        updateUI()
     }
 }

@@ -4,6 +4,7 @@ import UIKit
 final class TrackersCollectionViewCell: UICollectionViewCell {
     static let identifier: String = "TrackersCollectionViewCell"
     
+    // MARK: - Elements UI
     private let containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +39,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         
-        label.text = "Новая привычка, и еще привычка, и еще н"
+        //label.text = "Новая привычка..."
         return label
     } ()
     
@@ -48,18 +49,18 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         return view
     } ()
     
-    private let recordLabel: UILabel = {
+    private let executionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .left
         label.textColor = UIColor(resource: .trackerBackgroundBlack)
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        label.text = "5 дней"
+        //label.text = "5 дней"
         return label
     } ()
     
-    private let recordButton: UIButton = {
+    private let executionButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -67,16 +68,30 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         return button
     } ()
     
-    private var completed: Bool = false
-    private var countRecords: Int = 0
+    // MARK: - Properties
+    private let trackerManager = TrackersManager.shared
+    private var tracker: Tracker?
+    private var date: Date?
     
+    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - setupUI
+    func configure(tracker: Tracker, date: Date) {
+        self.tracker = tracker
+        self.date = date
+        
+        self.trackerNameLabel.text = tracker.name
+        self.cardView.backgroundColor = tracker.color
+        self.executionButton.backgroundColor = tracker.color
+        
+        setupUI()
     }
     
     private func setupUI() {
@@ -87,7 +102,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setupFooterView()
         setupRecordLabel()
         setupRecordButton()
-        setLabelState()
+        
+        setExecutionLabel()
     }
     
     private func setupContainerView() {
@@ -102,7 +118,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupCardView() {
-        cardView.backgroundColor = UIColor(resource: .trackerBlue)
+        //cardView.backgroundColor = UIColor(resource: .trackerBlue)
         containerView.addSubview(cardView)
         
         NSLayoutConstraint.activate([
@@ -146,59 +162,60 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupRecordLabel() {
-        footerView.addSubview(recordLabel)
+        footerView.addSubview(executionLabel)
         
         NSLayoutConstraint.activate([
-            recordLabel.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 16),
-            recordLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 12),
-            recordLabel.widthAnchor.constraint(equalToConstant: 100),
-            recordLabel.heightAnchor.constraint(equalToConstant: 18)
+            executionLabel.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 16),
+            executionLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 12),
+            executionLabel.widthAnchor.constraint(equalToConstant: 100),
+            executionLabel.heightAnchor.constraint(equalToConstant: 18)
         ])
     }
     
     private func setupRecordButton() {
-        recordButton.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside)
+        executionButton.addTarget(self, action: #selector(executionButtonTapped), for: .touchUpInside)
         
-        footerView.addSubview(recordButton)
+        footerView.addSubview(executionButton)
         
         NSLayoutConstraint.activate([
-            recordButton.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 8),
-            recordButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -12),
-            recordButton.widthAnchor.constraint(equalToConstant: 34),
-            recordButton.heightAnchor.constraint(equalToConstant: 34)
+            executionButton.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 8),
+            executionButton.trailingAnchor.constraint(equalTo: footerView.trailingAnchor, constant: -12),
+            executionButton.widthAnchor.constraint(equalToConstant: 34),
+            executionButton.heightAnchor.constraint(equalToConstant: 34)
         ])
         
-        setButtonStyle()
+        setExecutionButton()
     }
     
-    @objc private func recordButtonTapped() {
-        completed = !completed
-        setButtonStyle()
-        setCount()
-        setLabelState()
+    // MARK: - Action
+    @objc private func executionButtonTapped() {
+        setCountExecutions()
+        setExecutionButton()
+        setExecutionLabel()
     }
     
-    private func setButtonStyle() {
-        if completed {
-            recordButton.backgroundColor = recordButton.backgroundColor?.withAlphaComponent(0.5)
-            recordButton.setImage(UIImage(resource: .done), for: .normal)
+    // MARK: - additional methods
+    private func setExecutionButton() {
+        guard let id = tracker?.id, let date else { return }
+        if trackerManager.hasRecord(id: id, date: date) {
+            executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(0.5)
+            executionButton.setImage(UIImage(resource: .done), for: .normal)
         }
         else {
-            recordButton.backgroundColor = recordButton.backgroundColor?.withAlphaComponent(1)
-            recordButton.setImage(UIImage(systemName: "plus"), for: .normal)
-            recordButton.tintColor = UIColor(resource: .trackerWhite)
+            executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(1)
+            executionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            executionButton.tintColor = UIColor(resource: .trackerWhite)
         }
     }
     
-    private func setCount() {
-        if completed {
-            countRecords = countRecords + 1
-        } else {
-            countRecords = countRecords - 1
-        }
+    private func setCountExecutions() {
+        guard let id = tracker?.id, let date, date <= Date() else { return }
+        trackerManager.changeRecord(id: id, date: date)
     }
 
-    private func setLabelState() {
-        recordLabel.text = "\(countRecords) дней"
+    private func setExecutionLabel() {
+        guard let id = tracker?.id else { return }
+        let countExecutions = trackerManager.countRecords(id: id)
+        executionLabel.text = "\(countExecutions) дней"
     }
 }

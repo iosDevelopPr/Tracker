@@ -53,7 +53,7 @@ final class CategoryPageViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             dizzyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            dizzyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)    // TODO
+            dizzyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     

@@ -2,6 +2,8 @@
 import UIKit
 
 final class SchedulePageViewController: UIViewController {
+    private let identifierCell: String = "ScheduleCell"
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Расписание"
@@ -29,21 +31,43 @@ final class SchedulePageViewController: UIViewController {
         button.layer.masksToBounds = true
         return button
     } ()
+    
+    // MARK: - Properties
+    private var selectedDays: Set<Schedule>
+    private var presenter: NewTrackerPresenterProtocol
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = UIColor(resource: .trackerWhite)
         setupUI()
     }
     
-    @objc private func preparedButtonPressed() {
-        dismiss(animated: true, completion: nil)
+    init(presenter: NewTrackerPresenterProtocol) {
+        self.presenter = presenter
+        self.selectedDays = presenter.tracker.schedule ?? []
+        super.init(nibName: nil, bundle: nil)
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc private func preparedButtonPressed() {
+        presenter.updateSchedule(schedule: selectedDays)
+        dismiss(animated: true)
+    }
+    
+    @objc private func switchChanged(_ sender: UISwitch) {
+        let selectedDay = Schedule.getSchedule(day: sender.tag)
+        if sender.isOn {
+            selectedDays.insert(selectedDay)
+        } else {
+            selectedDays.remove(selectedDay)
+        }
+    }
     
     private func setupUI() {
+        view.backgroundColor = UIColor(resource: .trackerWhite)
         setupMainLabel()
         setupScheduleTable()
         setupButtons()
@@ -62,7 +86,7 @@ final class SchedulePageViewController: UIViewController {
     private func setupScheduleTable() {
         scheduleTable.delegate = self
         scheduleTable.dataSource = self
-        scheduleTable.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        scheduleTable.register(UITableViewCell.self, forCellReuseIdentifier: identifierCell)
         
         scheduleTable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scheduleTable)
@@ -91,13 +115,16 @@ final class SchedulePageViewController: UIViewController {
 }
 
 extension SchedulePageViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 75 }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 75 } // Высота ячейки
 }
 
 extension SchedulePageViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { 7 }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        Schedule.allCases.count   // Кол-во ячеек в таблице (по дням недели)
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifierCell, for: indexPath)
         configureCell(cell, for: indexPath)
         let isLast = indexPath.row == 6
 
@@ -125,10 +152,10 @@ extension SchedulePageViewController: UITableViewDataSource {
         let switchView = UISwitch()
         let dayIndex = (indexPath.row + 2) % 7
         switchView.tag = dayIndex == 0 ? 7 : dayIndex
-        switchView.isOn = true
+        switchView.isOn = selectedDays.contains(Schedule.getSchedule(day: dayIndex))
 
         switchView.onTintColor = UIColor(resource: .trackerBlue)
-        //switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
+        switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         return switchView
     }
 }

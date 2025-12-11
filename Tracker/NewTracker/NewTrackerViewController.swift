@@ -63,13 +63,17 @@ final class NewTrackerViewController: UIViewController {
     private var isWarningHidden = true
     
     private var nameFieldManager: NameFieldManager
+    var delegate: NewTrackerViewControllerDelegate?
+    private let presenter: NewTrackerPresenterProtocol
 
     // MARK: - Initializer
-    init() {
-        self.nameFieldManager = NameFieldManager(nameField: nameField)
+    init(presenter: NewTrackerPresenterProtocol) {
+        self.presenter = presenter
+        self.nameFieldManager = NameFieldManager(nameField: nameField, presenter: presenter)
         super.init(nibName: nil, bundle: nil)
         
-        nameFieldManager.addDelegate(delegate: self)
+        self.presenter.configure(view: self)
+        self.nameFieldManager.addDelegate(delegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -79,13 +83,14 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = UIColor(resource: .trackerWhite)
         setupUI()
+        setupGestureRecognizer()
     }
     
     // MARK: UI Setup
     private func setupUI() {
+        view.backgroundColor = UIColor(resource: .trackerWhite)
+        
         setupScrollVIew()
         setupMainLabel()
         setupNameFieldContainer()
@@ -93,6 +98,8 @@ final class NewTrackerViewController: UIViewController {
         setupButtonsTable()
         setupCancelButton()
         setupCreateButton()
+        
+        updateButtonCreate()
     }
     
     private func setupScrollVIew() {
@@ -174,7 +181,8 @@ final class NewTrackerViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            cancelButton.topAnchor.constraint(equalTo: buttonTable.bottomAnchor, constant: 24),
+            //cancelButton.topAnchor.constraint(equalTo: buttonTable.bottomAnchor, constant: 24),
+            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20)
         ])
     }
@@ -193,13 +201,33 @@ final class NewTrackerViewController: UIViewController {
         ])
     }
 
+    private func setupGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func hideKeyboard() {
+        view.endEditing(true)
+    }
+
     // MARK: - Actions
     @objc private func cancelButtonPressed() {
         self.dismiss(animated: true, completion: nil)
     }
     
     @objc private func createButtonPressed() {
+        presenter.createTracker()
+        delegate?.updateMainView()
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    func updateButtonCreate() {
+        if presenter.dataFilled() {
+            setButtonEnable()
+        } else {
+            setButtonDisable()
+        }
     }
     
     func setButtonEnable() {
@@ -245,22 +273,19 @@ extension NewTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedOption = buttonsIdentifiers[indexPath.row]
+        var createViewController: UIViewController
 
         switch selectedOption {
         case "Категория":
-            let createViewController = CategoryPageViewController()
-            createViewController.modalPresentationStyle = .pageSheet
-            present(createViewController, animated: true)
-
+            createViewController = CategoryPageViewController()
         case "Расписание":
-            let createViewController = SchedulePageViewController()
-            createViewController.modalPresentationStyle = .pageSheet
-            present(createViewController, animated: true)
-
+            createViewController = SchedulePageViewController(presenter: presenter)
         default:
-            // TODO: обработка ошибки
-            break
+            return
         }
+        
+        createViewController.modalPresentationStyle = .pageSheet
+        present(createViewController, animated: true)
     }
 }
 
@@ -277,9 +302,25 @@ extension NewTrackerViewController: UITableViewDataSource {
         }
 
         let identifier = buttonsIdentifiers[indexPath.row]
-        cell.configure(title: identifier, description: "")
+        var descriptionText: String = ""
+        
+        switch identifier {
+        case "Категория":
+            descriptionText = presenter.categoryString()
+        case "Расписание":
+            descriptionText = presenter.scheduleString()
+        default:
+            break
+        }
+        cell.configure(title: identifier, description: descriptionText)
 
         cell.selectionStyle = .none
         return cell
+    }
+}
+
+extension NewTrackerViewController: NewTrackerViewControllerProtocol {
+    func reloadButtonTable() {
+        buttonTable.reloadData()
     }
 }
