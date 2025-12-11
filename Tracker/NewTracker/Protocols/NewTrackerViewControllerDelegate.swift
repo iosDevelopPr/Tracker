@@ -1,0 +1,4 @@
+
+protocol NewTrackerViewControllerDelegate {
+    func updateMainView()
+}
