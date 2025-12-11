@@ -80,8 +80,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        assertionFailure("init(coder:) has not been implemented")
+        nil
     }
     
     // MARK: - setupUI

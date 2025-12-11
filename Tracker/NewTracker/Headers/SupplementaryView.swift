@@ -21,8 +21,7 @@ final class SupplementaryView: UICollectionReusableView {
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        assertionFailure("init(coder:) has not been implemented")
+        nil
     }
     
     private func setupUI() {
