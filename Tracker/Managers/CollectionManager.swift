@@ -4,11 +4,12 @@ import UIKit
 final class CollectionManager: NSObject {
     private let collectionView: UICollectionView
     
-    private let cellCount: Int = 2          // Колличество секций
-    private let leftInset: CGFloat = 16     // Левый отступ
-    private let rightInset: CGFloat = 16    // Правый отступ
-    private let cellSpacing: CGFloat = 9    // Расстояние между секциями
-    private let cellHeight: Int = 148       // Высота секции, ширина расчетная
+    private let cellCount: Int = 2
+    private let leftInset: CGFloat = 16
+    private let rightInset: CGFloat = 16
+    private let cellSpacing: CGFloat = 9
+    private let cellHeight: Int = 148
+    private let heightCategory: CGFloat = 54
     
     private let trackersManager = TrackersManager.shared
     private let picker: UIDatePicker
@@ -44,14 +45,7 @@ extension CollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         referenceSizeForHeaderInSection section: Int
     ) -> CGSize {
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-
-        return headerView.systemLayoutSizeFitting(
-            CGSize(width: collectionView.frame.width, height: UIView.layoutFittingExpandedSize.height),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
+        .init(width: collectionView.frame.width, height: heightCategory)
     }
 
     func collectionView(

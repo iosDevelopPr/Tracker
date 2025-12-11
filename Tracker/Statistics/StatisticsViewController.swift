@@ -26,7 +26,7 @@ final class StatisticsViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)    // TODO
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
 }

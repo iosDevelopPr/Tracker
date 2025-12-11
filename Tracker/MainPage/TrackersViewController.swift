@@ -39,6 +39,14 @@ final class TrackersViewController: UIViewController {
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "Поиск"
+        searchBar.searchBarStyle = .minimal
+        
+        if let textField = searchBar.value(forKey: "searchField") as? UITextField {
+            textField.layer.cornerRadius = 10
+            textField.layer.masksToBounds = true
+            textField.leftViewMode = .always
+        }
+        
         searchBar.setBackgroundImage(UIImage(), for: UIBarPosition.any, barMetrics: UIBarMetrics.default)
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         return searchBar
@@ -219,13 +227,18 @@ final class TrackersViewController: UIViewController {
         trackerCollection.isHidden = hidden
         dizzyImage.isHidden = !hidden
         dizzyLabel.isHidden = !hidden
-        trackerCollection.reloadData()
+        
+        if !hidden {
+            trackerCollection.reloadData()
+        }
     }
 }
 
 extension TrackersViewController: NewTrackerViewControllerDelegate {
     func updateMainView() {
         collectionManager?.updateCategories()
-        updateUI()
+        DispatchQueue.main.async {
+            self.updateUI()
+        }
     }
 }

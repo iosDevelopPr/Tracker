@@ -59,6 +59,7 @@ final class NewTrackerViewController: UIViewController {
     } ()
 
     private let buttonsIdentifiers = ["Категория", "Расписание"]
+    private let numberSection: Int = 2
     private var textFieldContainerHeightConstraint: NSLayoutConstraint!
     private var isWarningHidden = true
     
@@ -291,7 +292,7 @@ extension NewTrackerViewController: UITableViewDelegate {
 
 extension NewTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return numberSection
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

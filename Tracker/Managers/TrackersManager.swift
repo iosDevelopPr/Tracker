@@ -35,11 +35,11 @@ final class TrackersManager {
     
     func addTracker(indexCategory: Int, tracker: Tracker) {
         queue.async(flags: .barrier) {
-            let categorie = self.categories[indexCategory]
-            var trackers = categorie.trackers
+            let category = self.categories[indexCategory]
+            var trackers = category.trackers
             trackers.append(tracker)
             
-            let newCategory = TrackerCategory(name: categorie.name, trackers: trackers)
+            let newCategory = TrackerCategory(name: category.name, trackers: trackers)
             self.categories[indexCategory] = newCategory
         }
     }

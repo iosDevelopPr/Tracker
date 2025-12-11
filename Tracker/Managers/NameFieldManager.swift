@@ -5,8 +5,10 @@ final class NameFieldManager: NSObject {
     private let nameField: UITextField
     private var delegate: NameFieldManagerDelegate?
     private var presenter: NewTrackerPresenterProtocol?
+    
     private let placeholderText = "Введите название трекера"
-
+    private let maxLength: Int = 38
+    
     init(nameField: UITextField, presenter: NewTrackerPresenterProtocol) {
         self.nameField = nameField
         self.presenter = presenter
@@ -69,7 +71,7 @@ extension NameFieldManager: UITextFieldDelegate {
 
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         handleCharacterLimit(for: updatedText)
-        return updatedText.count <= 38
+        return updatedText.count <= maxLength
     }
 
     private func handleCharacterLimit(for updatedText: String) {
