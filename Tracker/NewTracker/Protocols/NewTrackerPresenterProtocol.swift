@@ -1,15 +1,19 @@
 
+import UIKit
+
 protocol NewTrackerPresenterProtocol {
-    var tracker: Tracker { get }
+    var trackerForPresenter: DataTrackerForPresenter { get }
     
     func configure(view: NewTrackerViewControllerProtocol)
     
-    func updateName(name: String)
-    func updateSchedule(schedule: Set<Schedule>)
+    func updateName(name: String?)
+    func updateCategory(category: String?)
+    func updateColor(color: UIColor?)
+    func updateEmoji(emoji: Emoji?)
+    func updateSchedule(schedule: Set<Schedule>?)
+    
     func scheduleString() -> String
     func categoryString() -> String
     
-    func dataFilled() -> Bool
-    
-    func createTracker()
+    func saveTracker()
 }

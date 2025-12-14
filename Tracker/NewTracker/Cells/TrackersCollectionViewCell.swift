@@ -26,7 +26,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.text = "🌟"
+        //label.text = "🌟"
         return label
     } ()
     
@@ -91,6 +91,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         self.trackerNameLabel.text = tracker.name
         self.cardView.backgroundColor = tracker.color
         self.executionButton.backgroundColor = tracker.color
+        self.emojiLabel.text = tracker.emoji.rawValue
         
         setupUI()
     }

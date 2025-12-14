@@ -86,13 +86,14 @@ final class TrackersViewController: UIViewController {
     } ()
     
     // MARK: - Properties
-    private var collectionManager: CollectionManager?
+    private var trackerCollectionManager: TrackerCollectionManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.setupNavigationBar()
         self.setupViewController()
+        setupGestureRecognizer()
     }
 
     // MARK: - Actions
@@ -107,10 +108,20 @@ final class TrackersViewController: UIViewController {
         let selectedDate = sender.date
         datePickerLabel.text = selectedDate.toShortDateString()
         
-        collectionManager?.updateCategories()
+        trackerCollectionManager?.updateCategories()
         updateUI()
     }
-    
+
+    private func setupGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func hideKeyboard() {
+        view.endEditing(true)
+    }
+
     // MARK: -
     private func setupNavigationBar() {
         navigationController?.setNavigationBarHidden(true, animated: true)
@@ -205,7 +216,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setupTrackerCollection() {
-        collectionManager = CollectionManager(collectionView: trackerCollection, picker: datePicker)
+        trackerCollectionManager = TrackerCollectionManager(collectionView: trackerCollection, picker: datePicker)
         
         view.addSubview(trackerCollection)
 
@@ -236,7 +247,7 @@ final class TrackersViewController: UIViewController {
 
 extension TrackersViewController: NewTrackerViewControllerDelegate {
     func updateMainView() {
-        collectionManager?.updateCategories()
+        trackerCollectionManager?.updateCategories()
         DispatchQueue.main.async {
             self.updateUI()
         }

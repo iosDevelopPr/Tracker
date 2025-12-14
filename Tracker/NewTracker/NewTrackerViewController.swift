@@ -57,12 +57,28 @@ final class NewTrackerViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     } ()
+    
+    private var emojiCollection: UICollectionView = {
+        let collection = UICollectionView(frame: .zero,
+            collectionViewLayout: UICollectionViewFlowLayout())
+        return collection
+    } ()
+    
+    private var colorCollection: UICollectionView = {
+        let collection = UICollectionView(frame: .zero,
+            collectionViewLayout: UICollectionViewFlowLayout())
+        return collection
+    } ()
 
+    // MARK: - Data and Managers
     private let buttonsIdentifiers = ["Категория", "Расписание"]
     private let numberSection: Int = 2
-    private var textFieldContainerHeightConstraint: NSLayoutConstraint!
     private var isWarningHidden = true
     
+    private var textFieldContainerHeightConstraint: NSLayoutConstraint!
+    private var emojiCollectionManager: EmojiCollectionManager
+    private var colorCollectionManager: ColorCollectionManager
+
     private var nameFieldManager: NameFieldManager
     var delegate: NewTrackerViewControllerDelegate?
     private let presenter: NewTrackerPresenterProtocol
@@ -71,6 +87,11 @@ final class NewTrackerViewController: UIViewController {
     init(presenter: NewTrackerPresenterProtocol) {
         self.presenter = presenter
         self.nameFieldManager = NameFieldManager(nameField: nameField, presenter: presenter)
+        self.emojiCollectionManager = EmojiCollectionManager(collectionView: emojiCollection,
+            presenter: presenter)
+        self.colorCollectionManager = ColorCollectionManager(collectionView: colorCollection,
+            presenter: presenter)
+        
         super.init(nibName: nil, bundle: nil)
         
         self.presenter.configure(view: self)
@@ -98,10 +119,12 @@ final class NewTrackerViewController: UIViewController {
         setupNameFieldContainer()
         setupNameField()
         setupButtonsTable()
+        setupEmojiCollection()
+        setupColorCollection()
         setupCancelButton()
         setupCreateButton()
         
-        updateButtonCreate()
+        setButtonDisable()
     }
     
     private func setupScrollVIew() {
@@ -165,7 +188,8 @@ final class NewTrackerViewController: UIViewController {
     private func setupButtonsTable() {
         buttonTable.delegate = self
         buttonTable.dataSource = self
-        buttonTable.register(ButtonsTableViewCells.self, forCellReuseIdentifier: "ButtonsTableViewCells")
+        buttonTable.register(ButtonsTableViewCells.self,
+            forCellReuseIdentifier: ButtonsTableViewCells.identifier)
         scrollView.addSubview(buttonTable)
         
         NSLayoutConstraint.activate([
@@ -176,6 +200,30 @@ final class NewTrackerViewController: UIViewController {
         ])
     }
     
+    private func setupEmojiCollection() {
+        emojiCollection.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(emojiCollection)
+
+        NSLayoutConstraint.activate([
+            emojiCollection.topAnchor.constraint(equalTo: buttonTable.bottomAnchor, constant: 34),
+            emojiCollection.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            emojiCollection.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            emojiCollection.heightAnchor.constraint(equalToConstant: 228)
+        ])
+    }
+    
+    private func setupColorCollection() {
+        colorCollection.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(colorCollection)
+
+        NSLayoutConstraint.activate([
+            colorCollection.topAnchor.constraint(equalTo: emojiCollection.bottomAnchor, constant: 34),
+            colorCollection.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            colorCollection.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            colorCollection.heightAnchor.constraint(equalToConstant: 228)
+        ])
+    }
+    
     private func setupCancelButton() {
         cancelButton.addTarget(self, action: #selector(cancelButtonPressed), for: .touchUpInside)
 
@@ -183,8 +231,8 @@ final class NewTrackerViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            //cancelButton.topAnchor.constraint(equalTo: buttonTable.bottomAnchor, constant: 24),
-            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            cancelButton.topAnchor.constraint(equalTo: colorCollection.bottomAnchor, constant: 24),
+            cancelButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20)
         ])
     }
@@ -219,17 +267,9 @@ final class NewTrackerViewController: UIViewController {
     }
     
     @objc private func createButtonPressed() {
-        presenter.createTracker()
+        presenter.saveTracker()
         delegate?.updateMainView()
         self.dismiss(animated: true, completion: nil)
-    }
-    
-    func updateButtonCreate() {
-        if presenter.dataFilled() {
-            setButtonEnable()
-        } else {
-            setButtonDisable()
-        }
     }
     
     func setButtonEnable() {
@@ -298,7 +338,7 @@ extension NewTrackerViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "ButtonsTableViewCells", for: indexPath
+            withIdentifier: ButtonsTableViewCells.identifier, for: indexPath
         ) as? ButtonsTableViewCells else {
             return UITableViewCell()
         }
@@ -324,5 +364,13 @@ extension NewTrackerViewController: UITableViewDataSource {
 extension NewTrackerViewController: NewTrackerViewControllerProtocol {
     func reloadButtonTable() {
         buttonTable.reloadData()
+    }
+    
+    func updateButtonCreate(enableButton: Bool) {
+        if enableButton {
+            setButtonEnable()
+        } else {
+            setButtonDisable()
+        }
     }
 }

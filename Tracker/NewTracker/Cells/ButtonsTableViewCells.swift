@@ -2,6 +2,8 @@
 import UIKit
 
 final class ButtonsTableViewCells: UITableViewCell {
+    static let identifier: String = "ButtonsTableViewCells"
+    
     private let labelsContainer = UIView()
     private let titleLabel: UILabel = {
         let label = UILabel()

@@ -5,5 +5,6 @@ struct Tracker {
     let id: UUID
     let name: String
     let color: UIColor
+    let emoji: Emoji
     let schedule: Set<Schedule>?
 }

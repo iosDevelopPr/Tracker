@@ -1,5 +1,5 @@
 
 protocol NewTrackerViewControllerProtocol: AnyObject {
     func reloadButtonTable()
-    func updateButtonCreate()
+    func updateButtonCreate(enableButton: Bool)
 }

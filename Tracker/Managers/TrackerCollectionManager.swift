@@ -1,7 +1,7 @@
 
 import UIKit
 
-final class CollectionManager: NSObject {
+final class TrackerCollectionManager: NSObject {
     private let collectionView: UICollectionView
     
     private let cellCount: Int = 2
@@ -30,8 +30,8 @@ final class CollectionManager: NSObject {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.identifier)
-        collectionView.register(SupplementaryView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SupplementaryView.identifier)
+        collectionView.register(TrackersSupplementaryView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TrackersSupplementaryView.identifier)
     }
     
     func updateCategories() {
@@ -39,7 +39,7 @@ final class CollectionManager: NSObject {
     }
 }
 
-extension CollectionManager: UICollectionViewDelegateFlowLayout {
+extension TrackerCollectionManager: UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -74,7 +74,7 @@ extension CollectionManager: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - UICollectionViewDataSource
-extension CollectionManager: UICollectionViewDataSource {
+extension TrackerCollectionManager: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.categories[section].trackers.count
     }
@@ -95,9 +95,9 @@ extension CollectionManager: UICollectionViewDataSource {
             at indexPath: IndexPath) -> UICollectionReusableView {
         guard let view = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
-            withReuseIdentifier: SupplementaryView.identifier,
+            withReuseIdentifier: TrackersSupplementaryView.identifier,
             for: indexPath
-        ) as? SupplementaryView else {
+        ) as? TrackersSupplementaryView else {
             fatalError("Failed to dequeue SupplementaryView")
         }
         view.titleLabel.text = self.categories[indexPath.section].name

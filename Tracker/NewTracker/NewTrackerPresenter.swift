@@ -4,53 +4,119 @@ import UIKit
 final class NewTrackerPresenter: NewTrackerPresenterProtocol {
     private var view: NewTrackerViewControllerProtocol?
     
-    private(set) var tracker: Tracker
-    private var category: TrackerCategory
-    
-    init() {
-        self.category = TrackersManager.shared.category(index: 0) ?? TrackerCategory(name: "Общая категория привычек", trackers: [])
-        
-        let randomNumber = Int.random(in: 1...18)
-        let colorName = "TrackerColor\(randomNumber)"
-        let color = UIColor(resource: .init(name: colorName, bundle: .main))
-        
-        self.tracker = Tracker(id: UUID(), name: "", color: color, schedule: [])
+    private(set) var trackerForPresenter = DataTrackerForPresenter() {
+        didSet {
+            guard let view else { return }
+            view.updateButtonCreate(enableButton: trackerForPresenter.dataFilled())
+        }
     }
     
     func configure(view: NewTrackerViewControllerProtocol) {
         self.view = view
+        
+        self.updateCategory(category: "Общая категория привычек")
     }
     
-    func updateName(name: String) {
-        self.tracker = Tracker(id: self.tracker.id, name: name, color: self.tracker.color, schedule: self.tracker.schedule)
-        view?.updateButtonCreate()
+    func updateName(name: String?) {
+        let newName = name == "" ? nil : name
+        
+        let newTracker = DataTrackerForPresenter(
+            name: newName,
+            category: trackerForPresenter.category,
+            color: trackerForPresenter.color,
+            emoji: trackerForPresenter.emoji,
+            schedule: trackerForPresenter.schedule)
+        
+        trackerForPresenter = newTracker
     }
     
-    func updateSchedule(schedule: Set<Schedule>) {
-        self.tracker = Tracker(id: self.tracker.id, name: self.tracker.name, color: self.tracker.color, schedule: schedule)
+    func updateCategory(category: String?) {
+        let newCategory = category == "" ? nil : category
+        
+        let newTracker = DataTrackerForPresenter(
+            name: trackerForPresenter.name,
+            category: newCategory,
+            color: trackerForPresenter.color,
+            emoji: trackerForPresenter.emoji,
+            schedule: trackerForPresenter.schedule)
+        
+        trackerForPresenter = newTracker
+    }
+    
+    func updateEmoji(emoji: Emoji?) {
+        let newTracker = DataTrackerForPresenter(
+            name: trackerForPresenter.name,
+            category: trackerForPresenter.category,
+            color: trackerForPresenter.color,
+            emoji: emoji,
+            schedule: trackerForPresenter.schedule)
+        
+        trackerForPresenter = newTracker
+    }
+    
+    func updateColor(color: UIColor?) {
+        let newTracker = DataTrackerForPresenter(
+            name: trackerForPresenter.name,
+            category: trackerForPresenter.category,
+            color: color,
+            emoji: trackerForPresenter.emoji,
+            schedule: trackerForPresenter.schedule)
+        
+        trackerForPresenter = newTracker
+    }
+    
+    func updateSchedule(schedule: Set<Schedule>?) {
         view?.reloadButtonTable()
-        view?.updateButtonCreate()
+        
+        let newSchedule = schedule?.isEmpty == true ? nil : schedule
+        
+        let newTracker = DataTrackerForPresenter(
+            name: trackerForPresenter.name,
+            category: trackerForPresenter.category,
+            color: trackerForPresenter.color,
+            emoji: trackerForPresenter.emoji,
+            schedule: newSchedule)
+        
+        trackerForPresenter = newTracker
     }
     
     func scheduleString() -> String {
-        let schedule = self.tracker.schedule ?? []
+        let schedule = trackerForPresenter.schedule ?? []
         return Schedule.scheduleString(schedule: schedule)
     }
     
     func categoryString() -> String {
-        return self.category.name
+        return trackerForPresenter.category ?? ""
     }
     
-    func dataFilled() -> Bool {
-        return self.tracker.name != "" && self.tracker.schedule != nil && self.tracker.schedule?.count ?? 0 > 0
-    }
-    
-    func createTracker() {
-        let trackerManager = TrackersManager.shared
-        
-        if trackerManager.category(categoryName: self.category.name) == nil {
-            trackerManager.addCategory(category: self.category)
+    func saveTracker() {
+        if trackerForPresenter.dataFilled() {
+            let trackerManager = TrackersManager.shared
+            guard let category = trackerForPresenter.category, !category.isEmpty else { return }
+            if trackerManager.category(categoryName: category) == nil {
+                let newCategory = TrackerCategory(name: category, trackers: [])
+                trackerManager.addCategory(category: newCategory)
+            }
+            
+            guard let newTracker = newTracker() else { return }
+            trackerManager.addTracker(categoryName: category, tracker: newTracker)
         }
-        trackerManager.addTracker(categoryName: self.category.name, tracker: self.tracker)
+    }
+    
+    private func newTracker() -> Tracker? {
+        guard let name = trackerForPresenter.name,
+              let color = trackerForPresenter.color,
+              let emoji = trackerForPresenter.emoji,
+              let schedule = trackerForPresenter.schedule
+        else { return nil }
+        
+        let newTracker = Tracker(
+            id: UUID(),
+            name: name,
+            color: color,
+            emoji: emoji,
+            schedule: schedule)
+        
+        return newTracker
     }
 }
