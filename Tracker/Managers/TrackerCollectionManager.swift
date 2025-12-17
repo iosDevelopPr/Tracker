@@ -2,6 +2,7 @@
 import UIKit
 
 final class TrackerCollectionManager: NSObject {
+    // MARK: - Properties
     private let collectionView: UICollectionView
     
     private let cellCount: Int = 2

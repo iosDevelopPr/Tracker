@@ -6,6 +6,13 @@ final class ColorCollectionManager: NSObject {
     private let collectionView: UICollectionView
     private let presenter: NewTrackerPresenterProtocol
     
+    private let colorsCount: Int = 18
+    private let cellHeight: Int = 52
+    private let cellWidth: Int = 52
+    private let cellSpacingSection = CGFloat(5)
+    
+    private let sectionInsets: UIEdgeInsets = .init(top: 24, left: 18, bottom: 0, right: 19)
+    
     init(collectionView: UICollectionView, presenter: NewTrackerPresenterProtocol) {
         self.collectionView = collectionView
         self.presenter = presenter
@@ -26,7 +33,8 @@ final class ColorCollectionManager: NSObject {
         collectionView.register(
             ColorsSupplementaryView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: ColorsSupplementaryView.identifier)
+            withReuseIdentifier: ColorsSupplementaryView.identifier
+        )
     }
 }
 
@@ -34,7 +42,7 @@ extension ColorCollectionManager: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        18
+        colorsCount
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -109,14 +117,14 @@ extension ColorCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 24, left: 18, bottom: 0, right: 19)
+        return sectionInsets
     }
     
     func collectionView(_ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return 5
+        return cellSpacingSection
     }
     
     func collectionView(
@@ -124,6 +132,6 @@ extension ColorCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        CGSize(width: 52, height: 52)
+        CGSize(width: cellWidth, height: cellHeight)
     }
 }

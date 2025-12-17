@@ -13,8 +13,6 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
     
     func configure(view: NewTrackerViewControllerProtocol) {
         self.view = view
-        
-        self.updateCategory(category: "Общая категория привычек")
     }
     
     func updateName(name: String?) {
@@ -31,6 +29,8 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
     }
     
     func updateCategory(category: String?) {
+        view?.reloadButtonTable()
+        
         let newCategory = category == "" ? nil : category
         
         let newTracker = DataTrackerForPresenter(

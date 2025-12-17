@@ -64,7 +64,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let button = UIButton()
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor(resource: .trackerBlue)
+        //button.backgroundColor = UIColor(resource: .trackerBlue)
         return button
     } ()
     

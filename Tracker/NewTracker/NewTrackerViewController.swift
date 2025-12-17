@@ -72,6 +72,7 @@ final class NewTrackerViewController: UIViewController {
 
     // MARK: - Data and Managers
     private let buttonsIdentifiers = ["Категория", "Расписание"]
+    private let placeholderText = "Введите название трекера"
     private let numberSection: Int = 2
     private var isWarningHidden = true
     
@@ -86,7 +87,8 @@ final class NewTrackerViewController: UIViewController {
     // MARK: - Initializer
     init(presenter: NewTrackerPresenterProtocol) {
         self.presenter = presenter
-        self.nameFieldManager = NameFieldManager(nameField: nameField, presenter: presenter)
+        self.nameFieldManager = NameFieldManager(nameField: nameField,
+            presenter: presenter, placeholder: placeholderText)
         self.emojiCollectionManager = EmojiCollectionManager(collectionView: emojiCollection,
             presenter: presenter)
         self.colorCollectionManager = ColorCollectionManager(collectionView: colorCollection,
@@ -319,7 +321,9 @@ extension NewTrackerViewController: UITableViewDelegate {
 
         switch selectedOption {
         case "Категория":
-            createViewController = CategoryPageViewController()
+            createViewController = CategoryPageViewController(
+                presenter: presenter,
+                selectedCategory: presenter.trackerForPresenter.category)
         case "Расписание":
             createViewController = SchedulePageViewController(presenter: presenter)
         default:

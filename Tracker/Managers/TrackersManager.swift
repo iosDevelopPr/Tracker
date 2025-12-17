@@ -32,24 +32,8 @@ final class TrackersManager {
             }
         }
     }
-    
-    func addTracker(indexCategory: Int, tracker: Tracker) {
-        queue.async(flags: .barrier) {
-            let category = self.categories[indexCategory]
-            var trackers = category.trackers
-            trackers.append(tracker)
-            
-            let newCategory = TrackerCategory(name: category.name, trackers: trackers)
-            self.categories[indexCategory] = newCategory
-        }
-    }
 
     // MARK: - categories
-    func category(index: Int) -> TrackerCategory? {
-        if index >= categories.count || index < 0 || categories.isEmpty { return nil }
-        return categories[index]
-    }
-    
     func category(categoryName: String) -> TrackerCategory? {
         if let index = self.categories.firstIndex(where: { $0.name == categoryName }) {
             return categories[index]
@@ -68,13 +52,29 @@ final class TrackersManager {
             }
         }
     }
-    
+
+    func getCategories() -> [TrackerCategory] {
+        queue.sync {
+            return self.categories
+        }
+    }
+
+    func addCategory(categoryName: String) {
+        queue.async(flags: .barrier) {
+            guard self.category(categoryName: categoryName) != nil else {
+                let category = TrackerCategory(name: categoryName, trackers: [])
+                self.categories.append(category)
+                return
+            }
+        }
+    }
+
     func addCategory(category: TrackerCategory) {
         queue.async(flags: .barrier) {
             self.categories.append(category)
         }
     }
-    
+
     // MARK: - records
     func countRecords(id: UUID) -> Int {
         return completedTrackers.filter { $0.id == id }.count
