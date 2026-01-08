@@ -1,8 +1,8 @@
 
 import UIKit
 
-final class TrackerTableViewCell: UITableViewCell {
-    static let identifier: String = "TrackerTableViewCell"
+final class CategoryTableViewCell: UITableViewCell {
+    static let identifier: String = "CategoryTableViewCell"
     
     private let cellTextLabel: UILabel = {
         let label = UILabel()

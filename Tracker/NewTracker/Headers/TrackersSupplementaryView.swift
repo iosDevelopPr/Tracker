@@ -30,8 +30,8 @@ final class TrackersSupplementaryView: UICollectionReusableView {
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -28),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 24),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 23),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -9)
         ])
     }
 }

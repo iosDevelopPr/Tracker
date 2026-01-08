@@ -27,7 +27,7 @@ final class TrackerTableViewManager: NSObject {
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(TrackerTableViewCell.self, forCellReuseIdentifier: TrackerTableViewCell.identifier)
+        tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
     }
 }
 
@@ -49,22 +49,21 @@ extension TrackerTableViewManager: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: TrackerTableViewCell.identifier,
-            for: indexPath) as? TrackerTableViewCell
+            withIdentifier: CategoryTableViewCell.identifier,
+            for: indexPath) as? CategoryTableViewCell
         else {
             return UITableViewCell()
         }
         
-        let categories = trackersManager.getCategories()
-        let category = categories[indexPath.row]
+        let category = trackerCategoryList[indexPath.row]
         
         let isFirst = indexPath.row == 0
-        let isLast = indexPath.row == categories.count - 1
-        
+        let isLast = indexPath.row == trackerCategoryList.count - 1
         let isSelected = self.selectedCategory == category.name
         
         cell.configure(text: category.name, isSelected: isSelected, isFirst: isFirst, isLast: isLast)
         cell.selectionStyle = .none
+        
         return cell
     }
 }

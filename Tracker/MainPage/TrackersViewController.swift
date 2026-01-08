@@ -178,7 +178,7 @@ final class TrackersViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             dizzyImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            dizzyImage.centerYAnchor.constraint(equalTo: view.centerYAnchor)    // TODO
+            dizzyImage.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     

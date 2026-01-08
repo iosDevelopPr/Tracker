@@ -35,6 +35,8 @@ final class SchedulePageViewController: UIViewController {
     // MARK: - Properties
     private var selectedDays: Set<Schedule>
     private var presenter: NewTrackerPresenterProtocol
+    
+    private let heightTableCell: CGFloat = 75
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -116,12 +118,12 @@ final class SchedulePageViewController: UIViewController {
 }
 
 extension SchedulePageViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 75 } // Высота ячейки
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { heightTableCell }
 }
 
 extension SchedulePageViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        Schedule.allCases.count   // Кол-во ячеек в таблице (по дням недели)
+        Schedule.allCases.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

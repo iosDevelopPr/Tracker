@@ -26,7 +26,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        //label.text = "🌟"
         return label
     } ()
     
@@ -38,8 +37,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        
-        //label.text = "Новая привычка..."
         return label
     } ()
     
@@ -55,8 +52,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .left
         label.textColor = UIColor(resource: .trackerBackgroundBlack)
         label.translatesAutoresizingMaskIntoConstraints = false
-        
-        //label.text = "5 дней"
         return label
     } ()
     
@@ -64,7 +59,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let button = UIButton()
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
-        //button.backgroundColor = UIColor(resource: .trackerBlue)
         return button
     } ()
     
@@ -120,7 +114,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupCardView() {
-        //cardView.backgroundColor = UIColor(resource: .trackerBlue)
         containerView.addSubview(cardView)
         
         NSLayoutConstraint.activate([
@@ -217,7 +210,19 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
 
     private func setExecutionLabel() {
         guard let id = tracker?.id else { return }
+        
         let countExecutions = trackerManager.countRecords(id: id)
-        executionLabel.text = "\(countExecutions) дней"
+        
+        let remainderValue = countExecutions % 10
+        var text: String = ""
+        switch remainderValue {
+        case 1:
+            text = "день"
+        case 2, 3, 4:
+            text = "дня"
+        default:
+            text = "дней"
+        }
+        executionLabel.text = "\(countExecutions) \(text)"
     }
 }

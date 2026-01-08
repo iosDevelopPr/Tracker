@@ -2,7 +2,6 @@
 import UIKit
 
 final class NewCategoryViewController: UIViewController {
-    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Категория"

@@ -52,7 +52,7 @@ final class TabBarController: UITabBarController {
             $1.tabBarItem.title = dataSource[$0].title
             $1.tabBarItem.image = dataSource[$0].icon
             
-            $1.tabBarItem.setTitleTextAttributes([.font: UIFont.boldSystemFont(ofSize: 24)], for: .selected)
+            $1.tabBarItem.setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 10)], for: .selected)
         }
     }
 }
