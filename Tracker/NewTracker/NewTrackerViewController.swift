@@ -76,7 +76,7 @@ final class NewTrackerViewController: UIViewController {
     private let numberSection: Int = 2
     private var isWarningHidden = true
     
-    private var textFieldContainerHeightConstraint: NSLayoutConstraint!
+    private var textFieldContainerHeightConstraint: NSLayoutConstraint?
     private var emojiCollectionManager: EmojiCollectionManager
     private var colorCollectionManager: ColorCollectionManager
 
@@ -155,7 +155,7 @@ final class NewTrackerViewController: UIViewController {
         scrollView.addSubview(fieldContainer)
 
         textFieldContainerHeightConstraint = fieldContainer.heightAnchor.constraint(equalToConstant: 75)
-        textFieldContainerHeightConstraint.isActive = true
+        textFieldContainerHeightConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
             fieldContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
@@ -288,7 +288,7 @@ final class NewTrackerViewController: UIViewController {
 extension NewTrackerViewController: NameFieldManagerDelegate {
     func showWarningLabel() {
         if isWarningHidden {
-            textFieldContainerHeightConstraint.constant = 113
+            textFieldContainerHeightConstraint?.constant = 113
             setupWarningLabel()
             UIView.animate(withDuration: 0) {
                 self.scrollView.layoutIfNeeded()
@@ -299,7 +299,7 @@ extension NewTrackerViewController: NameFieldManagerDelegate {
     
     func hideWarningLabel() {
         if !isWarningHidden {
-            textFieldContainerHeightConstraint.constant = 75
+            textFieldContainerHeightConstraint?.constant = 75
             warningLabel.removeFromSuperview()
             isWarningHidden = true
         }

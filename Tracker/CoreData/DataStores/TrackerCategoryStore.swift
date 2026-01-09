@@ -10,20 +10,24 @@ final class TrackerCategoryStore {
     
     func getCategories() -> [TrackerCategory] {
         let request: NSFetchRequest<CategoryCoreData> = CategoryCoreData.fetchRequest()
-        request.resultType = .managedObjectResultType
-        let categoriesCoreData = try? context.fetch(request)
         
         let trackerStore = TrackerStore()
-        
         var categories: [TrackerCategory] = []
         var trackers: [Tracker] = []
-        categoriesCoreData?.forEach { category in
-            trackers = []
-            category.trackers?.forEach { trackerCoreData in
-                trackers.append(trackerStore.getTracker(tracker: trackerCoreData as! TrackerCoreData))
+        
+        do {
+            let categoriesCoreData = try context.fetch(request)
+            categoriesCoreData.forEach { category in
+                trackers = []
+                category.trackers?.forEach { trackerCoreData in
+                    if let trackerCoreData = trackerCoreData as? TrackerCoreData {
+                        trackers.append(trackerStore.getTracker(tracker: trackerCoreData))
+                    }
+                }
+                categories.append(TrackerCategory(name: category.name ?? "", trackers: trackers))
+                
             }
-            categories.append(TrackerCategory(name: category.name ?? "", trackers: trackers))
-        }
+        } catch {}
         
         return categories
     }
@@ -31,15 +35,15 @@ final class TrackerCategoryStore {
     func addCategory(name: String) {
         let request: NSFetchRequest<CategoryCoreData> = CategoryCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "name == %@", name)
-        request.resultType = .countResultType
         
-        let result = try! context.execute(request) as! NSAsynchronousFetchResult<NSFetchRequestResult>
-        guard result.finalResult?[0] as! Int == 0 else { return }
-        
-        let category = CategoryCoreData(context: context)
-        category.name = name
-        
-        do { try context.save() } catch {}
+        do {
+            if try context.fetch(request).first == nil {
+                let category = CategoryCoreData(context: context)
+                category.name = name
+                
+                do { try context.save() } catch {}
+            }
+        } catch {}
     }
     
     func removeCategory(name: String) {

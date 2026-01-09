@@ -5,8 +5,6 @@ final class TrackersManager {
     static let shared: TrackersManager = TrackersManager()
     
     private var categories: [TrackerCategory] = []
-    private var completedTrackers: Set<TrackerRecord> = []
-    
     private let queue = DispatchQueue(label: "trackersManagerQueue", attributes: .concurrent)
     
     private init() {
@@ -78,6 +76,11 @@ final class TrackersManager {
             return self.categories
         }
     }
+    
+    private func getCategoryStore() {
+        let trackerCategoryStore = TrackerCategoryStore()
+        self.categories = trackerCategoryStore.getCategories()
+    }
 
     func addCategory(categoryName: String) {
         queue.async(flags: .barrier) {
@@ -104,49 +107,17 @@ final class TrackersManager {
 
     // MARK: - records
     func countRecords(id: UUID) -> Int {
-        return completedTrackers.filter { $0.id == id }.count
-//        let trackerRecordStore = TrackerRecordStore()
-//        return trackerRecordStore.countRecords(id: id)
+        let trackerRecordStore = TrackerRecordStore()
+        return trackerRecordStore.countRecords(id: id)
     }
 
     func hasRecord(id: UUID, date: Date) -> Bool {
-//        let trackerRecordStore = TrackerRecordStore()
-//        return trackerRecordStore.hasRecord(id: id, date: date)
-        return completedTrackers.contains{ $0.id == id &&
-            Calendar.current.isDate($0.date, inSameDayAs: date) }
+        let trackerRecordStore = TrackerRecordStore()
+        return trackerRecordStore.hasRecord(id: id, date: date)
     }
     
     func changeRecord(id: UUID, date: Date) {
-        if hasRecord(id: id, date: date) {
-            self.removeRecord(id: id, date: date)
-        } else {
-            self.addRecord(record: TrackerRecord(id: id, date: date))
-        }
-        
         let trackerRecordStore = TrackerRecordStore()
         trackerRecordStore.toggleRecord(record: TrackerRecord(id: id, date: date))
-    }
-
-    func addRecord(record: TrackerRecord) {
-        self.completedTrackers.insert(record)
-    }
-
-    func removeRecords(id: UUID) {
-        self.completedTrackers = self.completedTrackers.filter { $0.id != id }
-    }
-
-    func removeRecord(id: UUID, date: Date) {
-        let setForRemoval = self.completedTrackers.filter { $0.id == id &&
-            Calendar.current.isDate($0.date, inSameDayAs: date) }
-        guard let elementForRemoval = setForRemoval.first else { return }
-        self.completedTrackers.remove(elementForRemoval)
-        
-        let trackerRecordStore = TrackerRecordStore()
-        trackerRecordStore.removeRecord(id: id, date: date)
-    }
-    
-    func getCategoryStore() {
-        let trackerCategoryStore = TrackerCategoryStore()
-        self.categories = trackerCategoryStore.getCategories()
     }
 }

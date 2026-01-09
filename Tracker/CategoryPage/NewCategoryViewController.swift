@@ -36,10 +36,11 @@ final class NewCategoryViewController: UIViewController {
         return button
     } ()
 
-    private var textFieldContainerHeightConstraint: NSLayoutConstraint!
+    private var textFieldContainerHeightConstraint: NSLayoutConstraint?
     private var nameFieldManager: NameFieldManager
     private let placeholderCategory = "Введите название категории"
     private var isWarningHidden = true
+    private let maxSymbolsCountTextField = 50
     
     private var delegate: CategoryPageViewControllerProtocol
     
@@ -90,7 +91,7 @@ final class NewCategoryViewController: UIViewController {
         view.addSubview(fieldContainer)
 
         textFieldContainerHeightConstraint = fieldContainer.heightAnchor.constraint(equalToConstant: 75)
-        textFieldContainerHeightConstraint.isActive = true
+        textFieldContainerHeightConstraint?.isActive = true
         
         NSLayoutConstraint.activate([
             fieldContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -165,7 +166,7 @@ final class NewCategoryViewController: UIViewController {
 extension NewCategoryViewController: NameFieldManagerDelegate {
     func showWarningLabel() {
         if isWarningHidden {
-            textFieldContainerHeightConstraint.constant = 113
+            textFieldContainerHeightConstraint?.constant = 113
             setupWarningLabel()
             isWarningHidden = false
         }
@@ -173,7 +174,7 @@ extension NewCategoryViewController: NameFieldManagerDelegate {
     
     func hideWarningLabel() {
         if !isWarningHidden {
-            textFieldContainerHeightConstraint.constant = 75
+            textFieldContainerHeightConstraint?.constant = 75
             warningLabel.removeFromSuperview()
             isWarningHidden = true
         }
@@ -201,10 +202,10 @@ extension NewCategoryViewController: UITextFieldDelegate {
         if symbolsCount == 0 {
             hideWarningLabel()
             setButtonDisable()
-        } else if symbolsCount > 0 && symbolsCount <= 50 {
+        } else if symbolsCount > 0 && symbolsCount <= maxSymbolsCountTextField {
             hideWarningLabel()
             setButtonEnable()
-        } else if symbolsCount > 50 {
+        } else if symbolsCount > maxSymbolsCountTextField {
             showWarningLabel()
             setButtonDisable()
             return false

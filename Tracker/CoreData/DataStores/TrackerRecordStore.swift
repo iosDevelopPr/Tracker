@@ -8,6 +8,18 @@ final class TrackerRecordStore {
         self.context = CoreDataManager.shared.managedObjectContext
     }
     
+//    func getRecords() -> Set<TrackerRecord> {
+//        let request: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
+//        
+//        do {
+//            let records: [RecordCoreData] = try self.context.fetch(request)
+//            
+//            return Set(records.map(\.toTrackerRecord))
+//        } catch {
+//            return []
+//        }
+//    }
+    
     func toggleRecord(record: TrackerRecord) {
         if hasRecord(id: record.id, date: record.date) {
             removeRecord(id: record.id, date: record.date)
@@ -18,11 +30,15 @@ final class TrackerRecordStore {
     
     private func addRecode(record: TrackerRecord) {
         let request: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "tracker.id == %@ AND date == %@", record.id as CVarArg, record.date as CVarArg)
-        request.resultType = .countResultType
+        request.predicate = NSPredicate(format: "tracker.id == %@ AND date == %@", record.id as CVarArg, record.date.stripTime() as CVarArg)
+        request.fetchLimit = 1
         
         var count: Int = 0
-        do { count = try context.count(for: request) } catch { count = 0 }
+        do {
+            count = try context.count(for: request)
+        } catch {
+            count = 0
+        }
         
         if count == 0 {
             let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
@@ -53,7 +69,7 @@ final class TrackerRecordStore {
         }
     }
     
-    func removeRecord(id: UUID, date: Date) {
+    private func removeRecord(id: UUID, date: Date) {
         let request: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "tracker.id == %@ AND date == %@", id as CVarArg, date.stripTime() as CVarArg)
         
