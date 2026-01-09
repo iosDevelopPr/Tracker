@@ -74,7 +74,8 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
             withReuseIdentifier: EmojiCollectionViewCell.identifier,
             for: indexPath
         ) as? EmojiCollectionViewCell else {
-            fatalError("Failed to dequeue \(EmojiCollectionViewCell.identifier)")
+            assertionFailure("Failed to dequeue \(EmojiCollectionViewCell.identifier)")
+            return UICollectionViewCell()
         }
         
         cell.configure(with: Emoji.allCases[indexPath.row].rawValue)
@@ -90,7 +91,8 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
             withReuseIdentifier: EmojiSupplementaryView.identifier,
             for: indexPath
         ) as? EmojiSupplementaryView else {
-            fatalError("Failed to dequeue \(EmojiSupplementaryView.identifier)")
+            assertionFailure("Failed to dequeue \(EmojiSupplementaryView.identifier)")
+            return UICollectionReusableView()
         }
             
         view.titleLabel.text = "Emoji"

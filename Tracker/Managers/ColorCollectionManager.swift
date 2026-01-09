@@ -51,7 +51,8 @@ extension ColorCollectionManager: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath
         ) as? ColorCollectionViewCell else {
-            fatalError("Failed to dequeue ColorCollectionViewCell")
+            assertionFailure("Failed to dequeue \(ColorCollectionViewCell.identifier)")
+            return UICollectionViewCell()
         }
         
         cell.cellColor = UIColor.getUIColor(index: indexPath.row + 1)
@@ -68,7 +69,8 @@ extension ColorCollectionManager: UICollectionViewDataSource {
             withReuseIdentifier: ColorsSupplementaryView.identifier,
             for: indexPath
         ) as? ColorsSupplementaryView else {
-            fatalError("Failed to dequeue \(ColorsSupplementaryView.identifier)")
+            assertionFailure("Failed to dequeue \(ColorsSupplementaryView.identifier)")
+            return UICollectionReusableView()
         }
         
         view.titleLabel.text = "Цвет"

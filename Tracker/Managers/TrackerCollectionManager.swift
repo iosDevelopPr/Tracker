@@ -84,7 +84,8 @@ extension TrackerCollectionManager: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: TrackersCollectionViewCell.identifier, for: indexPath
         ) as? TrackersCollectionViewCell else {
-            fatalError("Could not dequeue a cell with identifier: \(TrackersCollectionViewCell.identifier)")
+            assertionFailure("Could not dequeue a cell with identifier: \(TrackersCollectionViewCell.identifier)")
+            return UICollectionViewCell()
         }
         let tracker = self.categories[indexPath.section].trackers[indexPath.row]
         cell.configure(tracker: tracker, date: picker.date)
@@ -99,7 +100,8 @@ extension TrackerCollectionManager: UICollectionViewDataSource {
             withReuseIdentifier: TrackersSupplementaryView.identifier,
             for: indexPath
         ) as? TrackersSupplementaryView else {
-            fatalError("Failed to dequeue SupplementaryView")
+            assertionFailure("Failed to dequeue \(TrackersSupplementaryView.self)")
+            return UICollectionReusableView()
         }
         view.titleLabel.text = self.categories[indexPath.section].name
         return view
