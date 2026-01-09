@@ -8,18 +8,6 @@ final class TrackerRecordStore {
         self.context = CoreDataManager.shared.managedObjectContext
     }
     
-//    func getRecords() -> Set<TrackerRecord> {
-//        let request: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
-//        
-//        do {
-//            let records: [RecordCoreData] = try self.context.fetch(request)
-//            
-//            return Set(records.map(\.toTrackerRecord))
-//        } catch {
-//            return []
-//        }
-//    }
-    
     func toggleRecord(record: TrackerRecord) {
         if hasRecord(id: record.id, date: record.date) {
             removeRecord(id: record.id, date: record.date)
