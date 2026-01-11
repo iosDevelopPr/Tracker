@@ -35,6 +35,8 @@ final class SchedulePageViewController: UIViewController {
     // MARK: - Properties
     private var selectedDays: Set<Schedule>
     private var presenter: NewTrackerPresenterProtocol
+    
+    private let heightTableCell: CGFloat = 75
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -44,7 +46,7 @@ final class SchedulePageViewController: UIViewController {
     
     init(presenter: NewTrackerPresenterProtocol) {
         self.presenter = presenter
-        self.selectedDays = presenter.tracker.schedule ?? []
+        self.selectedDays = presenter.trackerForPresenter.schedule ?? []
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -116,23 +118,22 @@ final class SchedulePageViewController: UIViewController {
 }
 
 extension SchedulePageViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 75 } // Высота ячейки
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { heightTableCell }
 }
 
 extension SchedulePageViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        Schedule.allCases.count   // Кол-во ячеек в таблице (по дням недели)
+        Schedule.allCases.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: identifierCell, for: indexPath)
         configureCell(cell, for: indexPath)
+        
         let isLast = indexPath.row == 6
-
         if isLast {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: cell.bounds.width)
         }
-
         return cell
     }
     
@@ -153,7 +154,7 @@ extension SchedulePageViewController: UITableViewDataSource {
         let switchView = UISwitch()
         let dayIndex = (indexPath.row + 2) % 7
         switchView.tag = dayIndex == 0 ? 7 : dayIndex
-        switchView.isOn = selectedDays.contains(Schedule.getSchedule(day: dayIndex))
+        switchView.isOn = selectedDays.contains(Schedule.getSchedule(day: switchView.tag))
 
         switchView.onTintColor = UIColor(resource: .trackerBlue)
         switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)

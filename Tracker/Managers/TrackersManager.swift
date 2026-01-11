@@ -5,11 +5,11 @@ final class TrackersManager {
     static let shared: TrackersManager = TrackersManager()
     
     private var categories: [TrackerCategory] = []
-    private var completedTrackers: Set<TrackerRecord> = []
-    
     private let queue = DispatchQueue(label: "trackersManagerQueue", attributes: .concurrent)
     
-    private init() {}
+    private init() {
+        self.getCategoryStore()
+    }
 
     // MARK: - trackers
     func hasTrackers(day: Schedule) -> Bool {
@@ -24,32 +24,33 @@ final class TrackersManager {
     
     func addTracker(categoryName: String, tracker: Tracker) {
         queue.async(flags: .barrier) {
-            if let index = self.categories.firstIndex(where: { $0.name == categoryName }) {
-                var trackers = self.categories[index].trackers
-                trackers.append(tracker)
-                let newCategory = TrackerCategory(name: categoryName, trackers: trackers)
-                self.categories[index] = newCategory
+            if self.category(categoryName: categoryName) == nil {
+                // Предполагается, что категория существует, но если это не так - создаем!
+                self.categories.append(TrackerCategory(name: categoryName, trackers: []))
+                
+                let categoryStore = TrackerCategoryStore()
+                categoryStore.addCategory(name: categoryName)
             }
-        }
-    }
-    
-    func addTracker(indexCategory: Int, tracker: Tracker) {
-        queue.async(flags: .barrier) {
-            let category = self.categories[indexCategory]
-            var trackers = category.trackers
-            trackers.append(tracker)
             
-            let newCategory = TrackerCategory(name: category.name, trackers: trackers)
-            self.categories[indexCategory] = newCategory
+            guard let index = self.categories
+                .firstIndex(where: { $0.name == categoryName }) else { return }
+            
+            var trackers = self.categories[index].trackers
+            if let indexTracker = trackers.firstIndex(where: { $0.id == tracker.id }) {
+                trackers[indexTracker] = tracker
+            } else {
+                trackers.append(tracker)
+            }
+            
+            let newCategory = TrackerCategory(name: categoryName, trackers: trackers)
+            self.categories[index] = newCategory
+            
+            let trackerStore = TrackerStore()
+            trackerStore.addTracker(tracker: tracker, categoryName: categoryName)
         }
     }
 
     // MARK: - categories
-    func category(index: Int) -> TrackerCategory? {
-        if index >= categories.count || index < 0 || categories.isEmpty { return nil }
-        return categories[index]
-    }
-    
     func category(categoryName: String) -> TrackerCategory? {
         if let index = self.categories.firstIndex(where: { $0.name == categoryName }) {
             return categories[index]
@@ -68,43 +69,55 @@ final class TrackersManager {
             }
         }
     }
+
+    func getCategories() -> [TrackerCategory] {
+        queue.sync {
+            self.getCategoryStore()
+            return self.categories
+        }
+    }
     
+    private func getCategoryStore() {
+        let trackerCategoryStore = TrackerCategoryStore()
+        self.categories = trackerCategoryStore.getCategories()
+    }
+
+    func addCategory(categoryName: String) {
+        queue.async(flags: .barrier) {
+            guard self.category(categoryName: categoryName) != nil else {
+                let category = TrackerCategory(name: categoryName, trackers: [])
+                self.categories.append(category)
+                
+                let trackerCategoryStore = TrackerCategoryStore()
+                trackerCategoryStore.addCategory(name: categoryName)
+                
+                return
+            }
+        }
+    }
+
     func addCategory(category: TrackerCategory) {
         queue.async(flags: .barrier) {
             self.categories.append(category)
+            
+            let trackerCategoryStore = TrackerCategoryStore()
+            trackerCategoryStore.addCategory(name: category.name)
         }
     }
-    
+
     // MARK: - records
     func countRecords(id: UUID) -> Int {
-        return completedTrackers.filter { $0.id == id }.count
+        let trackerRecordStore = TrackerRecordStore()
+        return trackerRecordStore.countRecords(id: id)
     }
 
     func hasRecord(id: UUID, date: Date) -> Bool {
-        return completedTrackers.contains{ $0.id == id &&
-            Calendar.current.isDate($0.date, inSameDayAs: date) }
+        let trackerRecordStore = TrackerRecordStore()
+        return trackerRecordStore.hasRecord(id: id, date: date)
     }
     
     func changeRecord(id: UUID, date: Date) {
-        if hasRecord(id: id, date: date) {
-            self.removeRecord(id: id, date: date)
-        } else {
-            self.addRecord(record: TrackerRecord(id: id, date: date))
-        }
-    }
-
-    func addRecord(record: TrackerRecord) {
-        self.completedTrackers.insert(record)
-    }
-
-    func removeRecords(id: UUID) {
-        self.completedTrackers = self.completedTrackers.filter { $0.id != id }
-    }
-
-    func removeRecord(id: UUID, date: Date) {
-        let setForRemoval = self.completedTrackers.filter { $0.id == id &&
-            Calendar.current.isDate($0.date, inSameDayAs: date) }
-        guard let elementForRemoval = setForRemoval.first else { return }
-        self.completedTrackers.remove(elementForRemoval)
+        let trackerRecordStore = TrackerRecordStore()
+        trackerRecordStore.toggleRecord(record: TrackerRecord(id: id, date: date))
     }
 }
