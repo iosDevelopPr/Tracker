@@ -13,7 +13,7 @@ final class StatisticsViewController: UIViewController {
     
     private let statisticImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(resource: .statistica)
+        imageView.image = .statistica
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     } ()

@@ -25,7 +25,6 @@ final class TrackerCategoryStore {
                     }
                 }
                 categories.append(TrackerCategory(name: category.name ?? "", trackers: trackers))
-                
             }
         } catch {}
         

@@ -100,7 +100,7 @@ extension TrackerCollectionManager: UICollectionViewDataSource {
             withReuseIdentifier: TrackersSupplementaryView.identifier,
             for: indexPath
         ) as? TrackersSupplementaryView else {
-            assertionFailure("Failed to dequeue \(TrackersSupplementaryView.self)")
+            assertionFailure("Failed to dequeue \(TrackersSupplementaryView.identifier)")
             return UICollectionReusableView()
         }
         view.titleLabel.text = self.categories[indexPath.section].name
