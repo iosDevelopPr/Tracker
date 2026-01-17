@@ -2,7 +2,7 @@
 import UIKit
 
 final class TrackersSupplementaryView: UICollectionReusableView {
-    static let identifier: String = "HeaderTrackersSupplementaryView"
+    static let reuseIdentifier: String = "HeaderTrackersSupplementaryView"
     
     private(set) var titleLabel: UILabel = {
         let label = UILabel()

@@ -1,7 +1,7 @@
 
 import UIKit
 
-final class SchedulePageViewController: UIViewController {
+final class ScheduleViewController: UIViewController {
     private let identifierCell: String = "ScheduleCell"
     
     private let titleLabel: UILabel = {
@@ -70,7 +70,7 @@ final class SchedulePageViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = UIColor(resource: .trackerWhite)
+        view.backgroundColor = .trackerWhite
         setupMainLabel()
         setupScheduleTable()
         setupButtons()
@@ -117,11 +117,11 @@ final class SchedulePageViewController: UIViewController {
     }
 }
 
-extension SchedulePageViewController: UITableViewDelegate {
+extension ScheduleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { heightTableCell }
 }
 
-extension SchedulePageViewController: UITableViewDataSource {
+extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         Schedule.allCases.count
     }

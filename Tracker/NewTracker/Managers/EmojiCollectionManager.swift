@@ -21,12 +21,12 @@ final class EmojiCollectionManager: NSObject {
         collectionView.allowsMultipleSelection = true
         collectionView.register(
             EmojiCollectionViewCell.self,
-            forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier
+            forCellWithReuseIdentifier: EmojiCollectionViewCell.reuseIdentifier
         )
         collectionView.register(
             EmojiSupplementaryView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: EmojiSupplementaryView.identifier
+            withReuseIdentifier: EmojiSupplementaryView.reuseIdentifier
         )
     }
 }
@@ -71,10 +71,10 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: EmojiCollectionViewCell.identifier,
+            withReuseIdentifier: EmojiCollectionViewCell.reuseIdentifier,
             for: indexPath
         ) as? EmojiCollectionViewCell else {
-            assertionFailure("Failed to dequeue \(EmojiCollectionViewCell.identifier)")
+            assertionFailure("Failed to dequeue \(EmojiCollectionViewCell.reuseIdentifier)")
             return UICollectionViewCell()
         }
         
@@ -88,10 +88,10 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
         at indexPath: IndexPath) -> UICollectionReusableView {
         guard let view = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
-            withReuseIdentifier: EmojiSupplementaryView.identifier,
+            withReuseIdentifier: EmojiSupplementaryView.reuseIdentifier,
             for: indexPath
         ) as? EmojiSupplementaryView else {
-            assertionFailure("Failed to dequeue \(EmojiSupplementaryView.identifier)")
+            assertionFailure("Failed to dequeue \(EmojiSupplementaryView.reuseIdentifier)")
             return UICollectionReusableView()
         }
             

@@ -2,7 +2,7 @@
 import UIKit
 
 final class ButtonsTableViewCells: UITableViewCell {
-    static let identifier: String = "ButtonsTableViewCells"
+    static let reuseIdentifier: String = "ButtonsTableViewCells"
     
     private let labelsContainer = UIView()
     private let titleLabel: UILabel = {

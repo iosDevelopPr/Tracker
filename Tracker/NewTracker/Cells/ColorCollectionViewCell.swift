@@ -2,7 +2,7 @@
 import UIKit
 
 final class ColorCollectionViewCell: UICollectionViewCell {
-    static let identifier: String = "ColorCollectionViewCell"
+    static let reuseIdentifier: String = "ColorCollectionViewCell"
     
     private let colorSquare: UIView = {
         let view = UIView()

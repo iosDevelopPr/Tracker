@@ -2,7 +2,7 @@
 import UIKit
 
 final class TrackersCollectionViewCell: UICollectionViewCell {
-    static let identifier: String = "TrackersCollectionViewCell"
+    static let reuseIdentifier: String = "TrackersCollectionViewCell"
     
     // MARK: - Elements UI
     private let containerView: UIView = {
@@ -20,7 +20,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     
     private let emojiLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = UIColor(resource: .trackerWhite).withAlphaComponent(0.3)
+        label.backgroundColor = .trackerWhite.withAlphaComponent(0.3)
         label.layer.cornerRadius = 12
         label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -33,7 +33,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .left
-        label.textColor = UIColor(resource: .trackerWhite)
+        label.textColor = .trackerWhite
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -50,7 +50,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .left
-        label.textColor = UIColor(resource: .trackerBackgroundBlack)
+        label.textColor = .trackerBackgroundBlack
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     } ()
@@ -63,13 +63,14 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     } ()
     
     // MARK: - Properties
-    private let trackerManager = TrackersManager.shared
     private var tracker: Tracker?
     private var date: Date?
+    private var recordDataProvider: RecordDataProvider?
     
     // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupUI()
     }
     
     @available(*, unavailable)
@@ -77,19 +78,30 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         nil
     }
     
-    // MARK: - setupUI
+    // MARK: - Configuration
     func configure(tracker: Tracker, date: Date) {
         self.tracker = tracker
         self.date = date
         
-        self.trackerNameLabel.text = tracker.name
-        self.cardView.backgroundColor = tracker.color
-        self.executionButton.backgroundColor = tracker.color
-        self.emojiLabel.text = tracker.emoji.rawValue
+        self.recordDataProvider?.clearDelegate()
+        self.recordDataProvider = RecordDataProvider(trackerID: tracker.id, delegate: self)
         
-        setupUI()
+        setupData()
+        setExecutionLabel()
+        setExecutionButton()
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        tracker = nil
+        date = nil
+        
+        recordDataProvider?.clearDelegate()
+        recordDataProvider = nil
     }
     
+    // MARK: - setupUI
     private func setupUI() {
         setupContainerView()
         setupCardView()
@@ -98,8 +110,15 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setupFooterView()
         setupRecordLabel()
         setupRecordButton()
+    }
+    
+    private func setupData() {
+        guard let tracker else { return }
         
-        setExecutionLabel()
+        self.trackerNameLabel.text = tracker.name
+        self.cardView.backgroundColor = tracker.color
+        self.executionButton.backgroundColor = tracker.color
+        self.emojiLabel.text = tracker.emoji.rawValue
     }
     
     private func setupContainerView() {
@@ -184,45 +203,53 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Action
     @objc private func executionButtonTapped() {
-        setCountExecutions()
-        setExecutionButton()
-        setExecutionLabel()
+        guard let date, date <= Date(), let recordDataProvider else { return }
+        recordDataProvider.toggleRecord(date: date)
     }
-    
+
     // MARK: - additional methods
     private func setExecutionButton() {
-        guard let id = tracker?.id, let date else { return }
-        if trackerManager.hasRecord(id: id, date: date) {
+        guard let date, let recordDataProvider = self.recordDataProvider else { return }
+        if recordDataProvider.hasRecord(date: date) {
             executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(0.5)
             executionButton.setImage(UIImage(resource: .done), for: .normal)
         }
         else {
             executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(1)
             executionButton.setImage(UIImage(systemName: "plus"), for: .normal)
-            executionButton.tintColor = UIColor(resource: .trackerWhite)
+            executionButton.tintColor = .trackerWhite
         }
-    }
-    
-    private func setCountExecutions() {
-        guard let id = tracker?.id, let date, date <= Date() else { return }
-        trackerManager.changeRecord(id: id, date: date)
     }
 
     private func setExecutionLabel() {
-        guard let id = tracker?.id else { return }
+        guard let recordDataProvider = self.recordDataProvider else { return }
         
-        let countExecutions = trackerManager.countRecords(id: id)
-        
-        let remainderValue = countExecutions % 10
+        let countExecutions = recordDataProvider.recordCount
         var text: String = ""
-        switch remainderValue {
-        case 1:
-            text = "день"
-        case 2, 3, 4:
-            text = "дня"
-        default:
+        
+        if countExecutions >= 11 && countExecutions <= 20 {
             text = "дней"
+        } else {
+            let remainderValue = countExecutions % 10
+            switch remainderValue {
+            case 1:
+                text = "день"
+            case 2, 3, 4:
+                text = "дня"
+            default:
+                text = "дней"
+            }
         }
         executionLabel.text = "\(countExecutions) \(text)"
+    }
+}
+
+extension TrackersCollectionViewCell: RecordDataProviderDelegate {
+    func recordsDidUpdate(id: UUID) {
+        guard id == self.tracker?.id else { return }
+        DispatchQueue.main.async {
+            self.setExecutionLabel()
+            self.setExecutionButton()
+        }
     }
 }

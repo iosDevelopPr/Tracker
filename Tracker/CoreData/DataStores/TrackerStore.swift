@@ -14,36 +14,83 @@ final class TrackerStore {
         let encoder = JSONEncoder()
         return encoder
     } ()
-
+    
     init() {
         self.context = CoreDataManager.shared.managedObjectContext
     }
     
-    func addTracker(tracker: Tracker, categoryName: String) {
-        let request: NSFetchRequest<CategoryCoreData> = CategoryCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "name == %@", categoryName)
-
-        guard let categoryCoreData = try? context.fetch(request).first else { return }
-
-        let trackerCoreData = TrackerCoreData(context: context)
-        trackerCoreData.id = tracker.id
-        trackerCoreData.name = tracker.name
-        trackerCoreData.color = tracker.color.toHexString()
-        trackerCoreData.emoji = tracker.emoji.rawValue
-        
-        if let schedule = tracker.schedule, let scheduleData = try? jsonEncoder.encode(schedule) {
-            trackerCoreData.schedule = scheduleData
-        } else {
-            trackerCoreData.schedule = nil
+    private func performSync<T>(_ action: (NSManagedObjectContext) -> Result<T, Error>) throws -> T {
+        let context = self.context
+        var result: Result<T, Error>!
+        context.performAndWait {
+            result = action(context)
         }
-        
-        categoryCoreData.addToTrackers(trackerCoreData)
-        
-        CoreDataManager.shared.saveContext()
+        return try result.get()
     }
     
-    func removeTracker(tracker: Tracker) {
-        
+    func addTracker(tracker: Tracker, categoryName: String) throws {
+        try performSync { context in
+            Result {
+                let request: NSFetchRequest<CategoryCoreData> = CategoryCoreData.fetchRequest()
+                request.predicate = NSPredicate(format: "name == %@", categoryName)
+                
+                guard let categoryCoreData = try context.fetch(request).first else { return }
+                
+                let trackerCoreData = TrackerCoreData(context: context)
+                trackerCoreData.id = tracker.id
+                trackerCoreData.name = tracker.name
+                trackerCoreData.color = tracker.color.toHexString()
+                trackerCoreData.emoji = tracker.emoji.rawValue
+                
+                if let schedule = tracker.schedule, let scheduleData = try? jsonEncoder.encode(schedule) {
+                    trackerCoreData.schedule = scheduleData
+                } else {
+                    trackerCoreData.schedule = nil
+                }
+                
+                categoryCoreData.addToTrackers(trackerCoreData)
+                try context.save()
+            }
+        }
+    }
+    
+    func getCategoriesWithTrackers(date: Date) throws -> [TrackerCategory] {
+        return try performSync { context in
+            Result {
+                let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+                let allTrackers = try context.fetch(request)
+
+                let scheduleDay = Schedule.dayOfWeek(date: date)
+                var categoryMap: [(categoryID: NSManagedObjectID, name: String, trackers: [Tracker])] = []
+
+                var categoryDict: [NSManagedObjectID: (name: String, trackers: [Tracker])] = [:]
+
+                for trackerCoreData in allTrackers {
+                    guard let category = trackerCoreData.category,
+                          let categoryName = category.name,
+                          let scheduleData = trackerCoreData.schedule,
+                          let schedule = try? jsonDecoder.decode(Set<Schedule>.self, from: scheduleData),
+                          schedule.contains(scheduleDay) else { continue }
+
+                    let tracker = getTracker(tracker: trackerCoreData)
+
+                    categoryDict[category.objectID, default: (name: categoryName, trackers: [])].trackers.append(tracker)
+                }
+
+                categoryMap = categoryDict.map { (key, value) in
+                    (categoryID: key, name: value.name, trackers: value.trackers)
+                }
+
+                return categoryMap
+                    .sorted { $0.categoryID.uriRepresentation().absoluteString < $1.categoryID.uriRepresentation().absoluteString }
+                    .map { category in
+                        TrackerCategory(
+                            name: category.name,
+                            trackers: category.trackers.sorted { $0.id.uuidString < $1.id.uuidString }
+                        )
+                    }
+            }
+        }
     }
     
     func getTracker(tracker: TrackerCoreData) -> Tracker {
@@ -62,25 +109,6 @@ final class TrackerStore {
             emoji: Emoji(rawValue: tracker.emoji ?? "😀") ?? .angryFace,
             schedule: schedule
         )
-        
-        return newTracker
-    }
-    
-    func getTrackerCoreData(tracker: Tracker) -> TrackerCoreData {
-        let schedule = tracker.schedule
-        var scheduleTracker: Data
-        do {
-            scheduleTracker = try jsonEncoder.encode(schedule)
-        } catch {
-            scheduleTracker = Data()
-        }
-        
-        let newTracker: TrackerCoreData = TrackerCoreData(context: self.context)
-        newTracker.id = tracker.id
-        newTracker.name = tracker.name
-        newTracker.color = tracker.color.toHexString()
-        newTracker.emoji = tracker.emoji.rawValue
-        newTracker.schedule = scheduleTracker
         
         return newTracker
     }

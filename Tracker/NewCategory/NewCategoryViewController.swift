@@ -37,27 +37,12 @@ final class NewCategoryViewController: UIViewController {
     } ()
 
     private var textFieldContainerHeightConstraint: NSLayoutConstraint?
-    private var nameFieldManager: NameFieldManager
-    private let placeholderCategory = "Введите название категории"
     private var isWarningHidden = true
+    private let placeholderCategory = "Введите название категории"
     private let maxSymbolsCountTextField = 50
     
-    private var delegate: CategoryPageViewControllerProtocol
-    
-    init(delegate: CategoryPageViewControllerProtocol) {
-        self.delegate = delegate
-        self.nameFieldManager = NameFieldManager(nameField: nameField,
-            presenter: nil, placeholder: placeholderCategory)
+    private var nameFieldManager: NameFieldManager?
 
-        super.init(nibName: nil, bundle: nil)
-        self.nameFieldManager.addDelegate(delegate: self)
-    }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        nil
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -110,6 +95,14 @@ final class NewCategoryViewController: UIViewController {
             nameField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             nameField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
+        
+        nameFieldManager = NameFieldManager(
+            nameField: nameField,
+            presenter: nil,
+            placeholder: placeholderCategory)
+        
+        nameField.delegate = self
+        nameFieldManager?.addDelegate(delegate: self)
     }
 
     private func setupWarningLabel() {
@@ -157,8 +150,8 @@ final class NewCategoryViewController: UIViewController {
 
     @objc private func createButtonTapped() {
         guard let nameCategory = nameField.text, !nameCategory.isEmpty else { return }
-        TrackersManager.shared.addCategory(categoryName: nameCategory)
-        delegate.categoryAdded()
+        let categoryDataProvider = CategoryDataProvider(delegate: nil)
+        try? categoryDataProvider.addCategory(name: nameCategory)
         dismiss(animated: true)
     }
 }

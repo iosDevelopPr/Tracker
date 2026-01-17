@@ -28,12 +28,12 @@ final class ColorCollectionManager: NSObject {
         collectionView.allowsMultipleSelection = true
         collectionView.register(
             ColorCollectionViewCell.self,
-            forCellWithReuseIdentifier: ColorCollectionViewCell.identifier
+            forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifier
         )
         collectionView.register(
             ColorsSupplementaryView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: ColorsSupplementaryView.identifier
+            withReuseIdentifier: ColorsSupplementaryView.reuseIdentifier
         )
     }
 }
@@ -49,9 +49,9 @@ extension ColorCollectionManager: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath
+            withReuseIdentifier: ColorCollectionViewCell.reuseIdentifier, for: indexPath
         ) as? ColorCollectionViewCell else {
-            assertionFailure("Failed to dequeue \(ColorCollectionViewCell.identifier)")
+            assertionFailure("Failed to dequeue \(ColorCollectionViewCell.reuseIdentifier)")
             return UICollectionViewCell()
         }
         
@@ -66,10 +66,10 @@ extension ColorCollectionManager: UICollectionViewDataSource {
     ) -> UICollectionReusableView {
         guard let view = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
-            withReuseIdentifier: ColorsSupplementaryView.identifier,
+            withReuseIdentifier: ColorsSupplementaryView.reuseIdentifier,
             for: indexPath
         ) as? ColorsSupplementaryView else {
-            assertionFailure("Failed to dequeue \(ColorsSupplementaryView.identifier)")
+            assertionFailure("Failed to dequeue \(ColorsSupplementaryView.reuseIdentifier)")
             return UICollectionReusableView()
         }
         

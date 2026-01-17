@@ -81,7 +81,7 @@ final class NewTrackerViewController: UIViewController {
     private var colorCollectionManager: ColorCollectionManager
 
     private var nameFieldManager: NameFieldManager
-    var delegate: NewTrackerViewControllerDelegate?
+    //var delegate: NewTrackerViewControllerDelegate?
     private let presenter: NewTrackerPresenterProtocol
 
     // MARK: - Initializer
@@ -114,7 +114,7 @@ final class NewTrackerViewController: UIViewController {
     
     // MARK: UI Setup
     private func setupUI() {
-        view.backgroundColor = UIColor(resource: .trackerWhite)
+        view.backgroundColor = .trackerWhite
         
         setupScrollVIew()
         setupMainLabel()
@@ -190,8 +190,10 @@ final class NewTrackerViewController: UIViewController {
     private func setupButtonsTable() {
         buttonTable.delegate = self
         buttonTable.dataSource = self
-        buttonTable.register(ButtonsTableViewCells.self,
-            forCellReuseIdentifier: ButtonsTableViewCells.identifier)
+        buttonTable.register(
+            ButtonsTableViewCells.self,
+            forCellReuseIdentifier: ButtonsTableViewCells.reuseIdentifier
+        )
         scrollView.addSubview(buttonTable)
         
         NSLayoutConstraint.activate([
@@ -269,18 +271,17 @@ final class NewTrackerViewController: UIViewController {
     }
     
     @objc private func createButtonPressed() {
-        presenter.saveTracker()
-        delegate?.updateMainView()
+        try? presenter.saveTracker()
         self.dismiss(animated: true, completion: nil)
     }
     
     func setButtonEnable() {
-        createButton.backgroundColor = UIColor(resource: .trackerBackgroundBlack)
+        createButton.backgroundColor = .trackerBackgroundBlack
         createButton.isEnabled = true
     }
 
     func setButtonDisable() {
-        createButton.backgroundColor = UIColor(resource: .trackerForLightGray)
+        createButton.backgroundColor = .trackerForLightGray
         createButton.isEnabled = false
     }
 }
@@ -306,6 +307,20 @@ extension NewTrackerViewController: NameFieldManagerDelegate {
     }
 }
 
+extension NewTrackerViewController: NewTrackerViewControllerProtocol {
+    func reloadButtonTable() {
+        buttonTable.reloadData()
+    }
+    
+    func updateButtonCreate(enableButton: Bool) {
+        if enableButton {
+            setButtonEnable()
+        } else {
+            setButtonDisable()
+        }
+    }
+}
+
 extension NewTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
@@ -321,11 +336,11 @@ extension NewTrackerViewController: UITableViewDelegate {
 
         switch selectedOption {
         case "Категория":
-            createViewController = CategoryPageViewController(
+            createViewController = CategoryViewController(
                 presenter: presenter,
                 selectedCategory: presenter.trackerForPresenter.category)
         case "Расписание":
-            createViewController = SchedulePageViewController(presenter: presenter)
+            createViewController = ScheduleViewController(presenter: presenter)
         default:
             return
         }
@@ -342,7 +357,7 @@ extension NewTrackerViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: ButtonsTableViewCells.identifier, for: indexPath
+            withIdentifier: ButtonsTableViewCells.reuseIdentifier, for: indexPath
         ) as? ButtonsTableViewCells else {
             return UITableViewCell()
         }
@@ -362,19 +377,5 @@ extension NewTrackerViewController: UITableViewDataSource {
 
         cell.selectionStyle = .none
         return cell
-    }
-}
-
-extension NewTrackerViewController: NewTrackerViewControllerProtocol {
-    func reloadButtonTable() {
-        buttonTable.reloadData()
-    }
-    
-    func updateButtonCreate(enableButton: Bool) {
-        if enableButton {
-            setButtonEnable()
-        } else {
-            setButtonDisable()
-        }
     }
 }

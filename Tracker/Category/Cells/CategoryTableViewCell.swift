@@ -2,7 +2,7 @@
 import UIKit
 
 final class CategoryTableViewCell: UITableViewCell {
-    static let identifier: String = "CategoryTableViewCell"
+    static let reuseIdentifier: String = "CategoryTableViewCell"
     
     private let cellTextLabel: UILabel = {
         let label = UILabel()
@@ -24,7 +24,7 @@ final class CategoryTableViewCell: UITableViewCell {
         setupUI()
     }
     
-    @available(iOS 13.0, *)
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         nil
     }

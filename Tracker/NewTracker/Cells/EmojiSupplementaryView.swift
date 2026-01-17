@@ -2,7 +2,7 @@
 import UIKit
 
 final class EmojiSupplementaryView: UICollectionReusableView {
-    static let identifier: String = "HeaderEmojiSupplementaryView"
+    static let reuseIdentifier = "EmojiSupplementaryView"
     
     private(set) var titleLabel = UILabel()
 
@@ -23,5 +23,4 @@ final class EmojiSupplementaryView: UICollectionReusableView {
     required init?(coder: NSCoder) {
         nil
     }
-
 }

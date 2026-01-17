@@ -2,7 +2,7 @@
 import UIKit
 
 final class EmojiCollectionViewCell: UICollectionViewCell {
-    static let identifier: String = "EmojiCollectionViewCell"
+    static let reuseIdentifier: String = "EmojiCollectionViewCell"
     
     private let emojiLabel: UILabel = {
         let label = UILabel()
@@ -54,5 +54,4 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
             emojiLabel.heightAnchor.constraint(equalToConstant: 38)
         ])
     }
-
 }

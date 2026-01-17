@@ -14,6 +14,6 @@ protocol NewTrackerPresenterProtocol {
     
     func scheduleString() -> String
     func categoryString() -> String
-    
-    func saveTracker()
+
+    func saveTracker() throws
 }
