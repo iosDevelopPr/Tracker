@@ -139,12 +139,12 @@ final class NewCategoryViewController: UIViewController {
     }
 
     func setButtonEnable() {
-        createButton.backgroundColor = UIColor(resource: .trackerBackgroundBlack)
+        createButton.backgroundColor = .trackerBackgroundBlack
         createButton.isEnabled = true
     }
 
     func setButtonDisable() {
-        createButton.backgroundColor = UIColor(resource: .trackerForLightGray)
+        createButton.backgroundColor = .trackerForLightGray
         createButton.isEnabled = false
     }
 

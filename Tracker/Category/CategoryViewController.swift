@@ -1,9 +1,11 @@
 import UIKit
 
 final class CategoryViewController: UIViewController {
+    
+    // MARK: - Elements UI
     private let dizzyImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(resource: .dizzy)
+        imageView.image = .dizzy
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     } ()
@@ -29,7 +31,7 @@ final class CategoryViewController: UIViewController {
     
     private let tableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = UIColor(resource: .trackerWhite)
+        tableView.backgroundColor = .trackerWhite
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
@@ -40,7 +42,7 @@ final class CategoryViewController: UIViewController {
         button.setTitle("Добавить категорию", for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(resource: .trackerBackgroundBlack)
+        button.backgroundColor = .trackerBackgroundBlack
         button.translatesAutoresizingMaskIntoConstraints = false
         
         button.layer.cornerRadius = 16
@@ -131,10 +133,22 @@ final class CategoryViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -20)
         ])
         
+        let viewModel = CategoryViewModel()
+        viewModel.listCategoryEmpty = { [weak self] isEmpty in
+            DispatchQueue.main.async {
+                self?.listCategoryEmpty(isEmpty: isEmpty)
+            }
+        }
+        viewModel.categorySelected = { [weak self] selectedCategory in
+            DispatchQueue.main.async {
+                self?.categorySelected(selectedCategory: selectedCategory)
+            }
+        }
+        
         trackerTableViewManager = TrackerTableViewManager(
             tableView: tableView,
             selectedCategory: selectedCategory,
-            delegate: self
+            viewModel: viewModel
         )
     }
 
@@ -143,9 +157,7 @@ final class CategoryViewController: UIViewController {
         createCategoryViewController.modalPresentationStyle = .pageSheet
         present(createCategoryViewController, animated: true)
     }
-}
-
-extension CategoryViewController: CategoryViewControllerProtocol {
+    
     func categorySelected(selectedCategory: TrackerCategory) {
         presenter.updateCategory(category: selectedCategory.name)
         dismiss(animated: true)

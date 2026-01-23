@@ -4,6 +4,7 @@ import UIKit
 final class CategoryTableViewCell: UITableViewCell {
     static let reuseIdentifier: String = "CategoryTableViewCell"
     
+    // MARK: - Elements UI
     private let cellTextLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -14,10 +15,15 @@ final class CategoryTableViewCell: UITableViewCell {
     
     private let rightImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(resource: .trackerCheckmark)
+        imageView.image = .trackerCheckmark
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     } ()
+    
+    private let leftIdent: CGFloat = 16
+    private let rightIdent: CGFloat = 41
+    private let topIdent: CGFloat = 27
+    private let bottomIdent: CGFloat = 26
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -31,16 +37,16 @@ final class CategoryTableViewCell: UITableViewCell {
     
     // MARK: - Setup UI
     private func setupUI() {
-        contentView.backgroundColor = UIColor(resource: .trackerLightGray)
+        contentView.backgroundColor = .trackerLightGray
         
         contentView.insertSubview(cellTextLabel, at: 0)
         contentView.addSubview(rightImageView)
         
         NSLayoutConstraint.activate([
-            cellTextLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 27),
-            cellTextLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            cellTextLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -41),
-            cellTextLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -26)
+            cellTextLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: topIdent),
+            cellTextLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leftIdent),
+            cellTextLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -rightIdent),
+            cellTextLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -bottomIdent)
         ])
         NSLayoutConstraint.activate([
             rightImageView.heightAnchor.constraint(equalToConstant: 14),

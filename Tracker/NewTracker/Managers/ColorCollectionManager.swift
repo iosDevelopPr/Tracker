@@ -10,6 +10,7 @@ final class ColorCollectionManager: NSObject {
     private let cellHeight: Int = 52
     private let cellWidth: Int = 52
     private let cellSpacingSection = CGFloat(5)
+    private let headerHeight: Double = 19
     
     private let sectionInsets: UIEdgeInsets = .init(top: 24, left: 18, bottom: 0, right: 19)
     
@@ -111,7 +112,7 @@ extension ColorCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         referenceSizeForHeaderInSection section: Int
     ) -> CGSize {
-        .init(width: collectionView.frame.width, height: 19)
+        .init(width: collectionView.frame.width, height: headerHeight)
     }
     
     func collectionView(
@@ -119,14 +120,14 @@ extension ColorCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return sectionInsets
+        sectionInsets
     }
     
     func collectionView(_ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return cellSpacingSection
+        cellSpacingSection
     }
     
     func collectionView(

@@ -2,6 +2,8 @@
 import UIKit
 
 final class NewTrackerViewController: UIViewController {
+    
+    // MARK: - Elements UI
     private let scrollView = UIScrollView()
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -51,7 +53,7 @@ final class NewTrackerViewController: UIViewController {
         button.setTitle("Создать", for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(resource: .trackerForLightGray)
+        button.backgroundColor = .trackerForLightGray
 
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +83,6 @@ final class NewTrackerViewController: UIViewController {
     private var colorCollectionManager: ColorCollectionManager
 
     private var nameFieldManager: NameFieldManager
-    //var delegate: NewTrackerViewControllerDelegate?
     private let presenter: NewTrackerPresenterProtocol
 
     // MARK: - Initializer
@@ -112,7 +113,7 @@ final class NewTrackerViewController: UIViewController {
         setupGestureRecognizer()
     }
     
-    // MARK: UI Setup
+    // MARK: - Setup UI
     private func setupUI() {
         view.backgroundColor = .trackerWhite
         

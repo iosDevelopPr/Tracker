@@ -2,6 +2,8 @@
 import UIKit
 
 final class TrackersViewController: UIViewController {
+    
+    // MARK: - Elements UI
     private let plusButton: UIButton = {
         let plusImage: UIImage = .plus
         
@@ -110,7 +112,7 @@ final class TrackersViewController: UIViewController {
         datePickerLabel.text = selectedDate.toShortDateString()
     }
 
-    // MARK: - UI Setup
+    // MARK: - Setup UI
     private func setupNavigationBar() {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }

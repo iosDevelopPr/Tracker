@@ -101,7 +101,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         recordDataProvider = nil
     }
     
-    // MARK: - setupUI
+    // MARK: - Setup UI
     private func setupUI() {
         setupContainerView()
         setupCardView()

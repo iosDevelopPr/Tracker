@@ -2,6 +2,7 @@
 import UIKit
 
 final class TrackersPresenter: NSObject {
+
     // MARK: - Properties
     private let collectionView: UICollectionView
     
@@ -90,7 +91,7 @@ extension TrackersPresenter: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: rightInset)
+        UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: rightInset)
     }
 
     func collectionView(_ collectionView: UICollectionView,
@@ -106,7 +107,7 @@ extension TrackersPresenter: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return cellSpacing
+        cellSpacing
     }
 }
 
