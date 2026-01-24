@@ -1,7 +1,7 @@
 
 import UIKit
 
-final class TrackersPresenter: NSObject {
+final class TrackersCollectionManager: NSObject {
 
     // MARK: - Properties
     private let collectionView: UICollectionView
@@ -77,7 +77,7 @@ final class TrackersPresenter: NSObject {
     }
 }
 
-extension TrackersPresenter: UICollectionViewDelegateFlowLayout {
+extension TrackersCollectionManager: UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -111,7 +111,7 @@ extension TrackersPresenter: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension TrackersPresenter: UICollectionViewDataSource {
+extension TrackersCollectionManager: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         categories.count
     }
@@ -160,8 +160,8 @@ extension TrackersPresenter: UICollectionViewDataSource {
     }
 }
 
-extension TrackersPresenter: DataProviderDelegate {
-    func DidUpdate() {
+extension TrackersCollectionManager: DataProviderDelegate {
+    func didUpdate() {
         DispatchQueue.main.async {
             self.updateDate(date: self.picker.date)
         }

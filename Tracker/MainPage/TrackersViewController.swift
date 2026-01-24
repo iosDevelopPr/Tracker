@@ -89,7 +89,7 @@ final class TrackersViewController: UIViewController {
     } ()
     
     // MARK: - Properties
-    private var trackersPresenter: TrackersPresenter?
+    private var trackersCollectionManager: TrackersCollectionManager?
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -216,7 +216,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setupTrackerCollection() {
-        trackersPresenter = TrackersPresenter(
+        trackersCollectionManager = TrackersCollectionManager(
             collectionView: trackerCollection,
             picker: datePicker,
             delegate: self
@@ -242,7 +242,7 @@ final class TrackersViewController: UIViewController {
 extension TrackersViewController: TrackersPresenterDelegate {
     func updateUI() {
         let day = Schedule.dayOfWeek(date: datePicker.date)
-        let hasTrackers = trackersPresenter?.hasTrackers(day: day) ?? false
+        let hasTrackers = trackersCollectionManager?.hasTrackers(day: day) ?? false
         setCollectionHidden(hidden: !hasTrackers)
     }
 }

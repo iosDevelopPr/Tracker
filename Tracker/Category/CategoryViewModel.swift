@@ -9,13 +9,21 @@ final class CategoryViewModel {
     var listCategoryEmpty: Binding<Bool>?
     var updateTableView: Binding<Void>?
     
-    var selectedCategory: String?
+    var lastSelectedCategory: String?
     
-    private(set) var categories: [TrackerCategory] = []
+    private var categories: [TrackerCategory] = []
     private var categoryDataProvider: CategoryDataProvider?
     
     init() {
         self.categoryDataProvider = CategoryDataProvider(delegate: self)
+    }
+    
+    var numberOfSections: Int {
+        return categories.count
+    }
+    
+    func getCategory(indexPath: IndexPath) -> TrackerCategory {
+        categories[indexPath.row]
     }
     
     func getCategories() {
@@ -29,7 +37,7 @@ final class CategoryViewModel {
 }
 
 extension CategoryViewModel: DataProviderDelegate {
-    func DidUpdate() {
+    func didUpdate() {
         getCategories()
         updateTableView?(())
     }

@@ -54,6 +54,6 @@ final class CategoryDataProvider: NSObject {
 // MARK: - NSFetchedResultsControllerDelegate
 extension CategoryDataProvider: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.DidUpdate()
+        delegate?.didUpdate()
     }
 }

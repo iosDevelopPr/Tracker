@@ -1,4 +1,4 @@
 
 protocol DataProviderDelegate: AnyObject {
-    func DidUpdate()
+    func didUpdate()
 }

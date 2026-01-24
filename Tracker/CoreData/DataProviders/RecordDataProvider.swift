@@ -51,7 +51,7 @@ final class RecordDataProvider: NSObject {
     }
     
     func clearDelegate() {
-        self.delegate = nil
+        delegate = nil
     }
 }
 

@@ -47,6 +47,6 @@ final class TrackerDataProvider: NSObject {
 
 extension TrackerDataProvider: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.DidUpdate()
+        delegate?.didUpdate()
     }
 }

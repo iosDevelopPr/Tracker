@@ -12,7 +12,7 @@ final class TrackerTableViewManager: NSObject {
         self.tableView = tableView
         
         self.viewModel = viewModel
-        self.viewModel.selectedCategory = selectedCategory
+        self.viewModel.lastSelectedCategory = selectedCategory
 
         super.init()
         
@@ -22,8 +22,8 @@ final class TrackerTableViewManager: NSObject {
             }
         }
         
-        setupTableView()
-        reloadData()
+        self.setupTableView()
+        self.reloadData()
     }
     
     private func setupTableView() {
@@ -55,7 +55,7 @@ extension TrackerTableViewManager: UITableViewDelegate {
 
 extension TrackerTableViewManager: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.categories.count
+        viewModel.numberOfSections
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -67,11 +67,11 @@ extension TrackerTableViewManager: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let category = viewModel.categories[indexPath.row]
+        let category = viewModel.getCategory(indexPath: indexPath)
 
         let isFirst = indexPath.row == 0
-        let isLast = indexPath.row == viewModel.categories.count - 1
-        let isSelected = viewModel.selectedCategory == category.name
+        let isLast = indexPath.row == viewModel.numberOfSections - 1
+        let isSelected = viewModel.lastSelectedCategory == category.name
         
         cell.configure(text: category.name, isSelected: isSelected, isFirst: isFirst, isLast: isLast)
         cell.selectionStyle = .none
