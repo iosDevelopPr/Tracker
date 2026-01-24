@@ -12,41 +12,17 @@ final class TrackerRecordStore {
         if hasRecord(id: record.id, date: record.date) {
             removeRecord(id: record.id, date: record.date)
         } else {
-            addRecode(record: record)
-        }
-    }
-    
-    private func addRecode(record: TrackerRecord) {
-        let request: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "tracker.id == %@ AND date == %@", record.id as CVarArg, record.date.stripTime() as CVarArg)
-        request.fetchLimit = 1
-        
-        var count: Int = 0
-        do {
-            count = try context.count(for: request)
-        } catch {
-            count = 0
-        }
-        
-        if count == 0 {
-            let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", record.id as CVarArg)
-            
-            do {
-                if let tracker = try context.fetch(request).first {
-                    let newRecord = RecordCoreData(context: context)
-                    newRecord.date = record.date.stripTime()
-                    newRecord.tracker = tracker
-                    
-                    try context.save()
-                }
-            } catch {}
+            addRecord(record: record)
         }
     }
     
     func hasRecord(id: UUID, date: Date) -> Bool {
         let request: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "tracker.id == %@ AND date == %@", id as CVarArg, date.stripTime() as CVarArg)
+        request.predicate = NSPredicate(
+            format: "tracker.id == %@ AND date == %@",
+            id as CVarArg,
+            date.stripTime() as CVarArg
+        )
         request.fetchLimit = 1
         
         do {
@@ -57,22 +33,52 @@ final class TrackerRecordStore {
         }
     }
     
+    private func addRecord(record: TrackerRecord) {
+        let requestRecord: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
+        requestRecord.predicate = NSPredicate(
+            format: "tracker.id == %@ AND date == %@",
+            record.id as CVarArg,
+            record.date.stripTime() as CVarArg
+        )
+        requestRecord.fetchLimit = 1
+        
+        var count: Int = 0
+        do { count = try context.count(for: requestRecord) }
+        catch { count = 0 }
+        
+        if count != 0 { return }
+        
+        let requestTracker: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        requestTracker.predicate = NSPredicate(format: "id == %@", record.id as CVarArg)
+        do {
+            if let tracker = try context.fetch(requestTracker).first {
+                let newRecord = RecordCoreData(context: context)
+                newRecord.date = record.date.stripTime()
+                newRecord.tracker = tracker
+                
+                try context.save()
+            }
+        } catch {}
+    }
+    
     private func removeRecord(id: UUID, date: Date) {
         let request: NSFetchRequest<RecordCoreData> = RecordCoreData.fetchRequest()
-        request.predicate = NSPredicate(format: "tracker.id == %@ AND date == %@", id as CVarArg, date.stripTime() as CVarArg)
+        request.predicate = NSPredicate(
+            format: "tracker.id == %@ AND date == %@",
+            id as CVarArg,
+            date.stripTime() as CVarArg
+        )
         
         do {
-            let recordsToDelete = try context.fetch(request)
-            if recordsToDelete.isEmpty {
-                return
-            }
+            let records = try context.fetch(request)
+            if records.isEmpty { return }
             
-            for record in recordsToDelete {
+            for record in records {
                 context.delete(record)
             }
             
             try context.save()
-        } catch { }
+        } catch {}
     }
     
     func countRecords(id: UUID) -> Int {

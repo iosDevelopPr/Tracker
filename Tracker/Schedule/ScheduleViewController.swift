@@ -1,9 +1,10 @@
 
 import UIKit
 
-final class SchedulePageViewController: UIViewController {
+final class ScheduleViewController: UIViewController {
     private let identifierCell: String = "ScheduleCell"
     
+    // MARK: - Elements UI
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Расписание"
@@ -23,8 +24,8 @@ final class SchedulePageViewController: UIViewController {
     private let preparedButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.setTitleColor(UIColor(resource: .trackerWhite), for: .normal)
-        button.backgroundColor = UIColor(resource: .trackerBackgroundBlack)
+        button.setTitleColor(.trackerWhite, for: .normal)
+        button.backgroundColor = .trackerBackgroundBlack
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
         button.layer.cornerRadius = 16
@@ -70,7 +71,7 @@ final class SchedulePageViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = UIColor(resource: .trackerWhite)
+        view.backgroundColor = .trackerWhite
         setupMainLabel()
         setupScheduleTable()
         setupButtons()
@@ -117,11 +118,11 @@ final class SchedulePageViewController: UIViewController {
     }
 }
 
-extension SchedulePageViewController: UITableViewDelegate {
+extension ScheduleViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { heightTableCell }
 }
 
-extension SchedulePageViewController: UITableViewDataSource {
+extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         Schedule.allCases.count
     }
@@ -143,7 +144,7 @@ extension SchedulePageViewController: UITableViewDataSource {
 
         cell.textLabel?.text = schedule.rawValue
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        cell.backgroundColor = UIColor.systemGray6
+        cell.backgroundColor = .systemGray6
         cell.selectionStyle = .none
 
         let switchView = createSwitch(for: indexPath)
@@ -156,7 +157,7 @@ extension SchedulePageViewController: UITableViewDataSource {
         switchView.tag = dayIndex == 0 ? 7 : dayIndex
         switchView.isOn = selectedDays.contains(Schedule.getSchedule(day: switchView.tag))
 
-        switchView.onTintColor = UIColor(resource: .trackerBlue)
+        switchView.onTintColor = .trackerBlue
         switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         return switchView
     }

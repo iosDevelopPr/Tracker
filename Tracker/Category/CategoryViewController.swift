@@ -1,10 +1,11 @@
-
 import UIKit
 
-final class CategoryPageViewController: UIViewController {
+final class CategoryViewController: UIViewController {
+    
+    // MARK: - Elements UI
     private let dizzyImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(resource: .dizzy)
+        imageView.image = .dizzy
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     } ()
@@ -30,7 +31,7 @@ final class CategoryPageViewController: UIViewController {
     
     private let tableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = UIColor(resource: .trackerWhite)
+        tableView.backgroundColor = .trackerWhite
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
@@ -41,7 +42,7 @@ final class CategoryPageViewController: UIViewController {
         button.setTitle("Добавить категорию", for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(resource: .trackerBackgroundBlack)
+        button.backgroundColor = .trackerBackgroundBlack
         button.translatesAutoresizingMaskIntoConstraints = false
         
         button.layer.cornerRadius = 16
@@ -49,9 +50,9 @@ final class CategoryPageViewController: UIViewController {
         return button
     } ()
     
-    private var trackerTableViewManager: TrackerTableViewManager?
     private let presenter: NewTrackerPresenterProtocol
     private var selectedCategory: String?
+    private var trackerTableViewManager: TrackerTableViewManager?
     
     init(presenter: NewTrackerPresenterProtocol, selectedCategory: String?) {
         self.presenter = presenter
@@ -69,20 +70,18 @@ final class CategoryPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(resource: .trackerWhite)
-        self.trackerTableViewManager = TrackerTableViewManager(
-            tableView: tableView, delegate: self, selectedCategory: selectedCategory)
-        
         setupUI()
     }
     
     private func setupUI() {
+        view.backgroundColor = .trackerWhite
+        
         setupTitleLabel()
         setupDizzyImage()
         setupTextLabel()
         setupCreateButton()
         setupTableView()
-    }
+   }
     
     private func setupTitleLabel() {
         view.addSubview(titleLabel)
@@ -133,29 +132,40 @@ final class CategoryPageViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -20)
         ])
+        
+        let viewModel = CategoryViewModel()
+        viewModel.listCategoryEmpty = { [weak self] isEmpty in
+            DispatchQueue.main.async {
+                self?.listCategoryEmpty(isEmpty: isEmpty)
+            }
+        }
+        viewModel.categorySelected = { [weak self] selectedCategory in
+            DispatchQueue.main.async {
+                self?.categorySelected(selectedCategory: selectedCategory)
+            }
+        }
+        
+        trackerTableViewManager = TrackerTableViewManager(
+            tableView: tableView,
+            selectedCategory: selectedCategory,
+            viewModel: viewModel
+        )
     }
 
     @objc private func createButtonTapped() {
-        let createCategoryViewController = NewCategoryViewController(delegate: self)
+        let createCategoryViewController = NewCategoryViewController()
         createCategoryViewController.modalPresentationStyle = .pageSheet
         present(createCategoryViewController, animated: true)
     }
-}
-
-extension CategoryPageViewController: CategoryPageViewControllerProtocol {
+    
     func categorySelected(selectedCategory: TrackerCategory) {
         presenter.updateCategory(category: selectedCategory.name)
         dismiss(animated: true)
     }
     
-    func listCategoryNotEmpty(isEmpty: Bool) {
-        dizzyImageView.isHidden = isEmpty
-        textLabel.isHidden = isEmpty
-        tableView.isHidden = !isEmpty
-    }
-    
-    func categoryAdded() {
-        trackerTableViewManager?.getCategories()
-        tableView.reloadData()
+    func listCategoryEmpty(isEmpty: Bool) {
+        dizzyImageView.isHidden = !isEmpty
+        textLabel.isHidden = !isEmpty
+        tableView.isHidden = isEmpty
     }
 }

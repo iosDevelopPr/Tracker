@@ -2,7 +2,7 @@
 import UIKit
 
 final class ColorsSupplementaryView: UICollectionReusableView {
-    static let identifier: String = "HeaderColorsSupplementaryView"
+    static var reuseIdentifier: String = "HeaderColorsSupplementaryView"
     
     private(set) var titleLabel: UILabel = {
         let label = UILabel()

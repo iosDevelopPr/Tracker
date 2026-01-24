@@ -89,17 +89,17 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
         return trackerForPresenter.category ?? ""
     }
     
-    func saveTracker() {
+    func saveTracker() throws {
         if trackerForPresenter.dataFilled() {
-            let trackerManager = TrackersManager.shared
             guard let category = trackerForPresenter.category, !category.isEmpty else { return }
-            if trackerManager.category(categoryName: category) == nil {
-                let newCategory = TrackerCategory(name: category, trackers: [])
-                trackerManager.addCategory(category: newCategory)
-            }
+            
+            let categoryDataProvider = CategoryDataProvider(delegate: nil)
+            try categoryDataProvider.addCategory(name: category)
             
             guard let newTracker = newTracker() else { return }
-            trackerManager.addTracker(categoryName: category, tracker: newTracker)
+            
+            let trackerDataProvider = TrackerDataProvider()
+            try trackerDataProvider.addTracker(tracker: newTracker, categoryName: category)
         }
     }
     

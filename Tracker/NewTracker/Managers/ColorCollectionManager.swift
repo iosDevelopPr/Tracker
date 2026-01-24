@@ -10,6 +10,7 @@ final class ColorCollectionManager: NSObject {
     private let cellHeight: Int = 52
     private let cellWidth: Int = 52
     private let cellSpacingSection = CGFloat(5)
+    private let headerHeight: Double = 19
     
     private let sectionInsets: UIEdgeInsets = .init(top: 24, left: 18, bottom: 0, right: 19)
     
@@ -28,12 +29,12 @@ final class ColorCollectionManager: NSObject {
         collectionView.allowsMultipleSelection = true
         collectionView.register(
             ColorCollectionViewCell.self,
-            forCellWithReuseIdentifier: ColorCollectionViewCell.identifier
+            forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifier
         )
         collectionView.register(
             ColorsSupplementaryView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: ColorsSupplementaryView.identifier
+            withReuseIdentifier: ColorsSupplementaryView.reuseIdentifier
         )
     }
 }
@@ -49,9 +50,9 @@ extension ColorCollectionManager: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath
+            withReuseIdentifier: ColorCollectionViewCell.reuseIdentifier, for: indexPath
         ) as? ColorCollectionViewCell else {
-            assertionFailure("Failed to dequeue \(ColorCollectionViewCell.identifier)")
+            assertionFailure("Failed to dequeue \(ColorCollectionViewCell.reuseIdentifier)")
             return UICollectionViewCell()
         }
         
@@ -66,10 +67,10 @@ extension ColorCollectionManager: UICollectionViewDataSource {
     ) -> UICollectionReusableView {
         guard let view = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
-            withReuseIdentifier: ColorsSupplementaryView.identifier,
+            withReuseIdentifier: ColorsSupplementaryView.reuseIdentifier,
             for: indexPath
         ) as? ColorsSupplementaryView else {
-            assertionFailure("Failed to dequeue \(ColorsSupplementaryView.identifier)")
+            assertionFailure("Failed to dequeue \(ColorsSupplementaryView.reuseIdentifier)")
             return UICollectionReusableView()
         }
         
@@ -111,7 +112,7 @@ extension ColorCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         referenceSizeForHeaderInSection section: Int
     ) -> CGSize {
-        .init(width: collectionView.frame.width, height: 19)
+        .init(width: collectionView.frame.width, height: headerHeight)
     }
     
     func collectionView(
@@ -119,14 +120,14 @@ extension ColorCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        return sectionInsets
+        sectionInsets
     }
     
     func collectionView(_ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return cellSpacingSection
+        cellSpacingSection
     }
     
     func collectionView(

@@ -2,13 +2,13 @@
 import UIKit
 
 final class ButtonsTableViewCells: UITableViewCell {
-    static let identifier: String = "ButtonsTableViewCells"
+    static let reuseIdentifier: String = "ButtonsTableViewCells"
     
     private let labelsContainer = UIView()
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .regular)
-        label.textColor = UIColor(resource: .trackerBackgroundBlack)
+        label.textColor = .trackerBackgroundBlack
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -16,7 +16,7 @@ final class ButtonsTableViewCells: UITableViewCell {
     private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .regular)
-        label.textColor = UIColor(resource: .trackerForLightGray)
+        label.textColor = .trackerForLightGray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     } ()
@@ -24,7 +24,7 @@ final class ButtonsTableViewCells: UITableViewCell {
     private let imageRightView: UIImageView = {
         let imageView = UIImageView()
         imageView.tintColor = .gray
-        imageView.image = UIImage(resource: .chevron)
+        imageView.image = .chevron
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     } ()
@@ -47,7 +47,7 @@ final class ButtonsTableViewCells: UITableViewCell {
         contentView.addSubview(labelsContainer)
 
         contentView.addSubview(imageRightView)
-        contentView.backgroundColor = UIColor(resource: .trackerLightGray)
+        contentView.backgroundColor = .trackerLightGray
         
         NSLayoutConstraint.activate([
             labelsContainer.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

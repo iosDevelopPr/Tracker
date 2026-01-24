@@ -6,6 +6,13 @@ final class EmojiCollectionManager: NSObject {
     private let collectionView: UICollectionView
     private let presenter: NewTrackerPresenterProtocol
     
+    private let cellHeight: Int = 52
+    private let cellWidth: Int = 52
+    private let cellSpacingSection = CGFloat(5)
+    private let headerHeight: Double = 19
+
+    private let sectionInsets: UIEdgeInsets = .init(top: 24, left: 18, bottom: 0, right: 19)
+
     init(collectionView: UICollectionView, presenter: NewTrackerPresenterProtocol) {
         self.collectionView = collectionView
         self.presenter = presenter
@@ -21,12 +28,12 @@ final class EmojiCollectionManager: NSObject {
         collectionView.allowsMultipleSelection = true
         collectionView.register(
             EmojiCollectionViewCell.self,
-            forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier
+            forCellWithReuseIdentifier: EmojiCollectionViewCell.reuseIdentifier
         )
         collectionView.register(
             EmojiSupplementaryView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: EmojiSupplementaryView.identifier
+            withReuseIdentifier: EmojiSupplementaryView.reuseIdentifier
         )
     }
 }
@@ -41,7 +48,7 @@ extension EmojiCollectionManager: UICollectionViewDelegate {
         }
         
         if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.contentView.backgroundColor = UIColor(resource: .trackerLightGray)
+            cell.contentView.backgroundColor = .trackerLightGray
         }
         
         presenter.updateEmoji(emoji: Emoji.allCases[indexPath.row])
@@ -71,10 +78,10 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: EmojiCollectionViewCell.identifier,
+            withReuseIdentifier: EmojiCollectionViewCell.reuseIdentifier,
             for: indexPath
         ) as? EmojiCollectionViewCell else {
-            assertionFailure("Failed to dequeue \(EmojiCollectionViewCell.identifier)")
+            assertionFailure("Failed to dequeue \(EmojiCollectionViewCell.reuseIdentifier)")
             return UICollectionViewCell()
         }
         
@@ -88,10 +95,10 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
         at indexPath: IndexPath) -> UICollectionReusableView {
         guard let view = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
-            withReuseIdentifier: EmojiSupplementaryView.identifier,
+            withReuseIdentifier: EmojiSupplementaryView.reuseIdentifier,
             for: indexPath
         ) as? EmojiSupplementaryView else {
-            assertionFailure("Failed to dequeue \(EmojiSupplementaryView.identifier)")
+            assertionFailure("Failed to dequeue \(EmojiSupplementaryView.reuseIdentifier)")
             return UICollectionReusableView()
         }
             
@@ -106,7 +113,7 @@ extension EmojiCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         referenceSizeForHeaderInSection section: Int
     ) -> CGSize {
-        CGSize(width: collectionView.frame.width, height: 19)
+        CGSize(width: collectionView.frame.width, height: headerHeight)
     }
     
     func collectionView(
@@ -114,7 +121,7 @@ extension EmojiCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
-        UIEdgeInsets(top: 24, left: 18, bottom: 0, right: 19)
+        sectionInsets
     }
     
     func collectionView(
@@ -122,7 +129,7 @@ extension EmojiCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        5
+        cellSpacingSection
     }
     
     func collectionView(
@@ -130,6 +137,6 @@ extension EmojiCollectionManager: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        CGSize(width: 52, height: 52)
+        CGSize(width: cellWidth, height: cellHeight)
     }
 }

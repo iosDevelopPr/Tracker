@@ -8,20 +8,20 @@ final class CoreDataManager {
     private let persistentContainer: NSPersistentContainer
     private let context: NSManagedObjectContext
     
+    var managedObjectContext: NSManagedObjectContext {
+        return self.context
+    }
+    
     private init () {
-        persistentContainer = NSPersistentContainer(name: "TrackerCoreData")
-        persistentContainer.loadPersistentStores { (description, error) in }
+        self.persistentContainer = NSPersistentContainer(name: "TrackerCoreData")
+        self.persistentContainer.loadPersistentStores { (description, error) in }
         
-        context = persistentContainer.newBackgroundContext()
+        self.context = self.persistentContainer.newBackgroundContext()
     }
     
     deinit {
-        saveContext()
-        cleanDataStore()
-    }
-    
-    var managedObjectContext: NSManagedObjectContext {
-        return context
+        self.saveContext()
+        self.cleanDataStore()
     }
     
     func saveContext() {

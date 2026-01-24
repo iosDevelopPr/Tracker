@@ -32,19 +32,17 @@ final class TabBarController: UITabBarController {
         self.setupTabBar()
     }
     
-    private func setupTabBar() {        
+    private func setupTabBar() {
         let dataSource: [TabBarItem] = [.trackers, .statistics]
         
         self.viewControllers = dataSource.map {
             switch $0 {
             case .trackers:
-                let trackersViewController = TrackersViewController()
-                let trackersNavigationItem = UINavigationController(rootViewController: trackersViewController)
-                trackersNavigationItem.navigationBar.tintColor = .trackerBackgroundBlack
-                return trackersNavigationItem
+                return UINavigationController(
+                    rootViewController: TrackersViewController())
             case .statistics:
-                let statisticsViewController = StatisticsViewController()
-                return UINavigationController(rootViewController: statisticsViewController)
+                return UINavigationController(
+                    rootViewController: StatisticsViewController())
             }
         }
         
