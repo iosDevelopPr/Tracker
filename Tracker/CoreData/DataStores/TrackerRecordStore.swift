@@ -46,7 +46,7 @@ final class TrackerRecordStore {
         do { count = try context.count(for: requestRecord) }
         catch { count = 0 }
         
-        if count != 0 { return }
+        guard count == 0 else { return }
         
         let requestTracker: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
         requestTracker.predicate = NSPredicate(format: "id == %@", record.id as CVarArg)

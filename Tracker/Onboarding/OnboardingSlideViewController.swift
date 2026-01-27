@@ -78,7 +78,7 @@ final class OnboardingSlideViewController: UIViewController {
 
     @objc
     private func buttonPressed() {
-        UserDefaults.standard.set(true, forKey: "notRunOnboarding")
+        UserDefaultsService.shared.isNotRunOnboarding = true
 
         guard let window = UIApplication.shared.windows.first else { return }
 

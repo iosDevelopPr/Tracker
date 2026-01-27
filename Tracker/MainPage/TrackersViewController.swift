@@ -16,7 +16,7 @@ final class TrackersViewController: UIViewController {
     
     private let trackerLabel: UILabel = {
         let label = UILabel()
-        label.text = "Трекеры"
+        label.text = Localization.trackersTitle
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -41,7 +41,7 @@ final class TrackersViewController: UIViewController {
     
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
-        searchBar.placeholder = "Поиск"
+        searchBar.placeholder = Localization.searchPlaceholder
         searchBar.searchBarStyle = .minimal
         
         if let textField = searchBar.value(forKey: "searchField") as? UITextField {
