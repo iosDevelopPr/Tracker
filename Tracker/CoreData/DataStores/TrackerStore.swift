@@ -54,10 +54,81 @@ final class TrackerStore {
         }
     }
     
+    func deleteTracker(tracker: Tracker) throws {
+        try performSync { context in
+            Result {
+                let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+                request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+                
+                do {
+                    if let trackerCoreData = try context.fetch(request).first {
+                        context.delete(trackerCoreData)
+                        try context.save()
+                    }
+                } catch { }
+            }
+        }
+    }
+    
+    func updateTracker(tracker: Tracker, categoryName: String) throws {
+        try performSync { context in
+            Result {
+                let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+                request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+                
+                guard let trackerCoreData = try context.fetch(request).first else {
+                    return
+                }
+
+                trackerCoreData.name = tracker.name
+                trackerCoreData.color = tracker.color.toHexString()
+                trackerCoreData.emoji = tracker.emoji.rawValue
+                
+                if let schedule = tracker.schedule, let scheduleData = try? jsonEncoder.encode(schedule) {
+                    trackerCoreData.schedule = scheduleData
+                } else {
+                    trackerCoreData.schedule = nil
+                }
+                
+                if trackerCoreData.category?.name != categoryName {
+                    let requestCategory: NSFetchRequest<CategoryCoreData> = CategoryCoreData.fetchRequest()
+                    requestCategory.predicate = NSPredicate(format: "name == %@", categoryName)
+                    
+                    guard let categoryCoreData = try context.fetch(requestCategory).first else {
+                        return
+                    }
+                    
+                    trackerCoreData.willChangeValue(forKey: "category")
+                    trackerCoreData.category = categoryCoreData
+                }
+
+                try context.save()
+            }
+        }
+    }
+    
+    func togglePin(tracker: Tracker) throws {
+        try performSync { context in
+            Result {
+                let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+                request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+                
+                guard let trackerCoreData = try context.fetch(request).first else {
+                    return
+                }
+                
+                trackerCoreData.isPinned.toggle()
+                try context.save()
+            }
+        }
+    }
+    
     func getCategoriesWithTrackers(date: Date) throws -> [TrackerCategory] {
         return try performSync { context in
             Result {
                 let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+                //request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: false)]
+                
                 let allTrackers = try context.fetch(request)
 
                 let scheduleDay = Schedule.dayOfWeek(date: date)
@@ -86,14 +157,14 @@ final class TrackerStore {
                     .map { category in
                         TrackerCategory(
                             name: category.name,
-                            trackers: category.trackers.sorted { $0.id.uuidString < $1.id.uuidString }
+                            trackers: category.trackers.sorted { $0.name < $1.name }
                         )
                     }
             }
         }
     }
     
-    func getTracker(tracker: TrackerCoreData) -> Tracker {
+    private func getTracker(tracker: TrackerCoreData) -> Tracker {
         let scheduleTracker = tracker.schedule ?? Data()
         var schedule: Set<Schedule>
         do {
@@ -107,9 +178,25 @@ final class TrackerStore {
             name: tracker.name ?? "",
             color: UIColor(hex: tracker.color ?? "#000000"),
             emoji: Emoji(rawValue: tracker.emoji ?? "😀") ?? .angryFace,
-            schedule: schedule
+            schedule: schedule,
+            isPinned: tracker.isPinned
         )
         
         return newTracker
+    }
+    
+    func getCategoryForTracker(id: UUID) throws -> String? {
+        return try performSync { context in
+            Result {
+                let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+                request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+                
+                guard let trackerCoreData = try context.fetch(request).first else {
+                    return nil
+                }
+                
+                return trackerCoreData.category?.name
+            }
+        }
     }
 }

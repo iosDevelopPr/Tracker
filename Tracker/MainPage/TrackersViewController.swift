@@ -98,13 +98,17 @@ final class TrackersViewController: UIViewController {
         setupNavigationBar()
         setupViewController()
         setupGestureRecognizer()
+        
+        searchBar.delegate = self
     }
     
     // MARK: - Actions
     @objc private func didTapPlusButton(_ sender: Any) {
-        let newTrackerViewController = NewTrackerViewController(presenter: NewTrackerPresenter())
-        newTrackerViewController.modalPresentationStyle = .pageSheet
-        present(newTrackerViewController, animated: true)
+        let editTrackerPresenter = EditTrackerPresenter()
+        let editTrackerViewController = EditTrackerViewController(
+            presenter: editTrackerPresenter, tracker: nil, category: nil)
+        editTrackerViewController.modalPresentationStyle = .pageSheet
+        present(editTrackerViewController, animated: true)
     }
     
     @objc private func dateChanged(_ sender: UIDatePicker) {
@@ -239,10 +243,18 @@ final class TrackersViewController: UIViewController {
     }
 }
 
-extension TrackersViewController: TrackersPresenterDelegate {
+extension TrackersViewController: TrackersCollectionDelegate {
     func updateUI() {
         let day = Schedule.dayOfWeek(date: datePicker.date)
         let hasTrackers = trackersCollectionManager?.hasTrackers(day: day) ?? false
         setCollectionHidden(hidden: !hasTrackers)
+    }
+}
+
+extension TrackersViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+
+        let searchText = searchBar.text ?? ""
     }
 }

@@ -1,5 +1,27 @@
 
+newTrackerTitle = "New Habit";
+editTrackerTitle = "Habit editing";
 
 trackers = "Trackers";
 statistic = "Statistics";
 search = "Search";
+
+statisticPlaceholder = "Nothing to analyze yet";
+nameFieldMaxLengthLabel = "Limit of 38 characters";
+
+trackerPlaceholder = "Enter tracker name";
+categoryPlaceholder = "Enter category name";
+
+category = "Category";
+schedule = "Schedule";
+
+cancel = "Cancel";
+create = "Create";
+save = "Save";
+
+pin = "Pin";
+pinned = "Pinned";
+unpin = "Unpin";
+edit = "Edit";
+delete = "Delete";
+deleteConfirmation = "Are you sure you want to delete the tracker?";

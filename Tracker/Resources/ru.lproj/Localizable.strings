@@ -1,4 +1,27 @@
 
+newTrackerTitle = "Новая привычка";
+editTrackerTitle = "Редактирование привычки";
+
 trackers = "Трекеры";
 statistic = "Статистика";
 search = "Поиск";
+
+statisticPlaceholder = "Анализировать пока нечего";
+nameFieldMaxLengthLabel = "Ограничение 38 символов";
+
+trackerPlaceholder = "Введите название трекера";
+categoryPlaceholder = "Введите название категории";
+
+category = "Категория";
+schedule = "Расписание";
+
+cancel = "Отменить";
+create = "Создать";
+save = "Сохранить";
+
+pin = "Закрепить";
+pinned = "Закрепленные";
+unpin = "Открепить";
+edit = "Редактировать";
+delete = "Удалить";
+deleteConfirmation = "Уверены, что хотите удалить трекер?";

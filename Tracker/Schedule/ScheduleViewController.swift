@@ -35,7 +35,7 @@ final class ScheduleViewController: UIViewController {
     
     // MARK: - Properties
     private var selectedDays: Set<Schedule>
-    private var presenter: NewTrackerPresenterProtocol
+    private var presenter: EditTrackerPresenterProtocol
     
     private let heightTableCell: CGFloat = 75
 
@@ -45,7 +45,7 @@ final class ScheduleViewController: UIViewController {
         setupUI()
     }
     
-    init(presenter: NewTrackerPresenterProtocol) {
+    init(presenter: EditTrackerPresenterProtocol) {
         self.presenter = presenter
         self.selectedDays = presenter.trackerForPresenter.schedule ?? []
         super.init(nibName: nil, bundle: nil)

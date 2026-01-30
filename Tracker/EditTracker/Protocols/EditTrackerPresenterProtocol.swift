@@ -1,10 +1,11 @@
 
 import UIKit
 
-protocol NewTrackerPresenterProtocol {
+protocol EditTrackerPresenterProtocol {
     var trackerForPresenter: DataTrackerForPresenter { get }
     
-    func configure(view: NewTrackerViewControllerProtocol)
+    //func configure(view: EditTrackerViewControllerProtocol)
+    func configure(view: EditTrackerViewControllerProtocol, tracker: Tracker?, category: String?)
     
     func updateName(name: String?)
     func updateCategory(category: String?)
@@ -16,4 +17,6 @@ protocol NewTrackerPresenterProtocol {
     func categoryString() -> String
 
     func saveTracker() throws
+    
+    func recordCount(trackerID: UUID) -> Int
 }

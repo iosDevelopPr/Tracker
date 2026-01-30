@@ -4,12 +4,12 @@ import UIKit
 final class NameFieldManager: NSObject {
     private let nameField: UITextField
     private var delegate: NameFieldManagerDelegate?
-    private var presenter: NewTrackerPresenterProtocol?
+    private var presenter: EditTrackerPresenterProtocol?
     
     private var placeholderText = ""
     private let maxLength: Int = 38
     
-    init(nameField: UITextField, presenter: NewTrackerPresenterProtocol?, placeholder: String) {
+    init(nameField: UITextField, presenter: EditTrackerPresenterProtocol?, placeholder: String) {
         self.nameField = nameField
         self.presenter = presenter
         self.placeholderText = placeholder
@@ -25,7 +25,7 @@ final class NameFieldManager: NSObject {
     private func setupNameField() {
         nameField.backgroundColor = .trackerLightGray
         nameField.textColor = .trackerBackgroundBlack
-        nameField.font = UIFont.systemFont(ofSize: 19, weight: .regular)
+        nameField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         nameField.clearButtonMode = .whileEditing
         nameField.translatesAutoresizingMaskIntoConstraints = false
         

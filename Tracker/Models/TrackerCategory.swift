@@ -7,7 +7,7 @@ struct TrackerCategory {
         self.trackers = trackers
     }
     
-    static func == (lhs: TrackerCategory, rhs: TrackerCategory) -> Bool {
-        return lhs.name == rhs.name
-    }
+//    static func == (lhs: TrackerCategory, rhs: TrackerCategory) -> Bool {
+//        return lhs.name == rhs.name
+//    }
 }

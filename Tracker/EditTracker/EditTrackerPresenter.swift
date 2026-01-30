@@ -1,8 +1,8 @@
 
 import UIKit
 
-final class NewTrackerPresenter: NewTrackerPresenterProtocol {
-    private var view: NewTrackerViewControllerProtocol?
+final class EditTrackerPresenter: EditTrackerPresenterProtocol {
+    private var view: EditTrackerViewControllerProtocol?
     
     private(set) var trackerForPresenter = DataTrackerForPresenter() {
         didSet {
@@ -11,19 +11,34 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
         }
     }
     
-    func configure(view: NewTrackerViewControllerProtocol) {
+    func configure(view: EditTrackerViewControllerProtocol, tracker: Tracker?, category: String?) {
         self.view = view
+        
+        if let tracker {
+            self.trackerForPresenter = DataTrackerForPresenter(
+                id: tracker.id,
+                name: tracker.name,
+                category: category,
+                color: tracker.color,
+                emoji: tracker.emoji,
+                schedule: tracker.schedule,
+                isPinned: tracker.isPinned
+            )
+        }
     }
-    
+
     func updateName(name: String?) {
         let newName = name == "" ? nil : name
         
         let newTracker = DataTrackerForPresenter(
+            id: trackerForPresenter.id,
             name: newName,
             category: trackerForPresenter.category,
             color: trackerForPresenter.color,
             emoji: trackerForPresenter.emoji,
-            schedule: trackerForPresenter.schedule)
+            schedule: trackerForPresenter.schedule,
+            isPinned: trackerForPresenter.isPinned
+        )
         
         trackerForPresenter = newTracker
     }
@@ -34,33 +49,42 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
         let newCategory = category == "" ? nil : category
         
         let newTracker = DataTrackerForPresenter(
+            id: trackerForPresenter.id,
             name: trackerForPresenter.name,
             category: newCategory,
             color: trackerForPresenter.color,
             emoji: trackerForPresenter.emoji,
-            schedule: trackerForPresenter.schedule)
+            schedule: trackerForPresenter.schedule,
+            isPinned: trackerForPresenter.isPinned
+        )
         
         trackerForPresenter = newTracker
     }
     
     func updateEmoji(emoji: Emoji?) {
         let newTracker = DataTrackerForPresenter(
+            id: trackerForPresenter.id,
             name: trackerForPresenter.name,
             category: trackerForPresenter.category,
             color: trackerForPresenter.color,
             emoji: emoji,
-            schedule: trackerForPresenter.schedule)
+            schedule: trackerForPresenter.schedule,
+            isPinned: trackerForPresenter.isPinned
+        )
         
         trackerForPresenter = newTracker
     }
     
     func updateColor(color: UIColor?) {
         let newTracker = DataTrackerForPresenter(
+            id: trackerForPresenter.id,
             name: trackerForPresenter.name,
             category: trackerForPresenter.category,
             color: color,
             emoji: trackerForPresenter.emoji,
-            schedule: trackerForPresenter.schedule)
+            schedule: trackerForPresenter.schedule,
+            isPinned: trackerForPresenter.isPinned
+        )
         
         trackerForPresenter = newTracker
     }
@@ -71,11 +95,14 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
         let newSchedule = schedule?.isEmpty == true ? nil : schedule
         
         let newTracker = DataTrackerForPresenter(
+            id: trackerForPresenter.id,
             name: trackerForPresenter.name,
             category: trackerForPresenter.category,
             color: trackerForPresenter.color,
             emoji: trackerForPresenter.emoji,
-            schedule: newSchedule)
+            schedule: newSchedule,
+            isPinned: trackerForPresenter.isPinned
+        )
         
         trackerForPresenter = newTracker
     }
@@ -90,15 +117,17 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
     }
     
     func saveTracker() throws {
-        if trackerForPresenter.dataFilled() {
-            guard let category = trackerForPresenter.category, !category.isEmpty else { return }
-            
-            let categoryDataProvider = CategoryDataProvider(delegate: nil)
-            try categoryDataProvider.addCategory(name: category)
-            
-            guard let newTracker = newTracker() else { return }
-            
-            let trackerDataProvider = TrackerDataProvider()
+        if !trackerForPresenter.dataFilled() { return }
+        
+        guard let category = trackerForPresenter.category, !category.isEmpty else { return }
+        let updateTracker: Bool = trackerForPresenter.id != nil
+        
+        guard let newTracker = newTracker() else { return }
+        
+        let trackerDataProvider = TrackerDataProvider()
+        if updateTracker {
+            try trackerDataProvider.updateTracker(tracker: newTracker, categoryName: category)
+        } else {
             try trackerDataProvider.addTracker(tracker: newTracker, categoryName: category)
         }
     }
@@ -110,13 +139,20 @@ final class NewTrackerPresenter: NewTrackerPresenterProtocol {
               let schedule = trackerForPresenter.schedule
         else { return nil }
         
+        let id = trackerForPresenter.id ?? UUID()
+        
         let newTracker = Tracker(
-            id: UUID(),
+            id: id,
             name: name,
             color: color,
             emoji: emoji,
-            schedule: schedule)
+            schedule: schedule,
+            isPinned: trackerForPresenter.isPinned)
         
         return newTracker
+    }
+    
+    func recordCount(trackerID: UUID) -> Int {
+        return RecordDataProvider(trackerID: trackerID, delegate: nil).recordCount
     }
 }

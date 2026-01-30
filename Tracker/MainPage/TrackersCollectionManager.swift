@@ -14,13 +14,13 @@ final class TrackersCollectionManager: NSObject {
     private let heightCategory: CGFloat = 54
 
     private let picker: UIDatePicker
-    private let delegate: TrackersPresenterDelegate
+    private let delegate: TrackersCollectionDelegate
     
     private var trackerDataProvider: TrackerDataProvider
     private var categories: [TrackerCategory] = []
     
     // MARK: - Initializer
-    init(collectionView: UICollectionView, picker: UIDatePicker, delegate: TrackersPresenterDelegate) {
+    init(collectionView: UICollectionView, picker: UIDatePicker, delegate: TrackersCollectionDelegate) {
         self.collectionView = collectionView
         self.picker = picker
         self.delegate = delegate
@@ -69,6 +69,40 @@ final class TrackersCollectionManager: NSObject {
                 tracker.schedule?.contains(day) ?? false
             }
         }
+    }
+    
+    private func showDeleteConfirmation(tracker: Tracker) {
+        let alert = UIAlertController(
+            title: nil,
+            message: Localization.deleteConfirmation,
+            preferredStyle: .actionSheet
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: Localization.delete,
+            style: .destructive
+        ) { [weak self] _ in
+            self?.trackerDataProvider.deleteTracker(tracker: tracker)
+        }
+        
+        let cancelAction = UIAlertAction(
+            title: Localization.cancelButton,
+            style: .cancel,
+            handler: nil
+        )
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        delegate.present(alert, animated: true)
+    }
+    
+    private func editTracker(tracker: Tracker, category: String?) {
+        let editTrackerPresenter = EditTrackerPresenter()
+        let editTrackerViewController = EditTrackerViewController(
+            presenter: editTrackerPresenter, tracker: tracker, category: category)
+        editTrackerViewController.modalPresentationStyle = .pageSheet
+        delegate.present(editTrackerViewController, animated: true)
     }
 
     // MARK: - Actions
@@ -136,8 +170,20 @@ extension TrackersCollectionManager: UICollectionViewDataSource {
         }
         
         let tracker = categories[indexPath.section].trackers[indexPath.item]
+        let category = trackerDataProvider.getCategoryForTracker(id: tracker.id)
+        
         cell.configure(tracker: tracker, date: picker.date)
         
+        cell.pinToggleTracker = { [weak self] _ in
+            self?.trackerDataProvider.togglePin(tracker: tracker)
+        }
+        cell.editTracker = { [weak self] _ in
+            self?.editTracker(tracker: tracker, category: category)
+        }
+        cell.deleteTracker = { [weak self] _ in
+            self?.showDeleteConfirmation(tracker: tracker)
+        }
+
         return cell
     }
     
@@ -162,8 +208,8 @@ extension TrackersCollectionManager: UICollectionViewDataSource {
 
 extension TrackersCollectionManager: DataProviderDelegate {
     func didUpdate() {
-        DispatchQueue.main.async {
+        //DispatchQueue.main.async {
             self.updateDate(date: self.picker.date)
-        }
+        //}
     }
 }

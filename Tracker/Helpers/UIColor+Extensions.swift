@@ -24,6 +24,18 @@ extension UIColor {
         return UIColor(resource: .init(name: "TrackerColor\(randomNumber)", bundle: .main))
     }
     
+    static func getIndex(color: UIColor) -> Int? {
+        for i in 0...17 {
+            let trackerColor: UIColor = UIColor(resource: .init(name: "TrackerColor\(i + 1)", bundle: .main))
+            let colorString = color.toHexString()
+            
+            if trackerColor.toHexString() == colorString {
+                return i
+            }
+        }
+        return nil
+    }
+    
     func toHexString() -> String {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         // Получаем RGBA компоненты (в диапазоне 0.0 - 1.0)

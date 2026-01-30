@@ -50,11 +50,11 @@ final class CategoryViewController: UIViewController {
         return button
     } ()
     
-    private let presenter: NewTrackerPresenterProtocol
+    private let presenter: EditTrackerPresenterProtocol
     private var selectedCategory: String?
     private var trackerTableViewManager: TrackerTableViewManager?
     
-    init(presenter: NewTrackerPresenterProtocol, selectedCategory: String?) {
+    init(presenter: EditTrackerPresenterProtocol, selectedCategory: String?) {
         self.presenter = presenter
         self.selectedCategory = selectedCategory
         
@@ -135,14 +135,14 @@ final class CategoryViewController: UIViewController {
         
         let viewModel = CategoryViewModel()
         viewModel.listCategoryEmpty = { [weak self] isEmpty in
-            DispatchQueue.main.async {
+            //DispatchQueue.main.async {
                 self?.listCategoryEmpty(isEmpty: isEmpty)
-            }
+            //}
         }
         viewModel.categorySelected = { [weak self] selectedCategory in
-            DispatchQueue.main.async {
+            //DispatchQueue.main.async {
                 self?.categorySelected(selectedCategory: selectedCategory)
-            }
+            //}
         }
         
         trackerTableViewManager = TrackerTableViewManager(

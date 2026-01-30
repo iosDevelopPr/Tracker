@@ -4,7 +4,7 @@ import UIKit
 final class ColorCollectionManager: NSObject {
     // MARK: - Properties
     private let collectionView: UICollectionView
-    private let presenter: NewTrackerPresenterProtocol
+    private let presenter: EditTrackerPresenterProtocol
     
     private let colorsCount: Int = 18
     private let cellHeight: Int = 52
@@ -14,7 +14,9 @@ final class ColorCollectionManager: NSObject {
     
     private let sectionInsets: UIEdgeInsets = .init(top: 24, left: 18, bottom: 0, right: 19)
     
-    init(collectionView: UICollectionView, presenter: NewTrackerPresenterProtocol) {
+    private var selectedColor: UIColor?
+    
+    init(collectionView: UICollectionView, presenter: EditTrackerPresenterProtocol) {
         self.collectionView = collectionView
         self.presenter = presenter
         
@@ -26,7 +28,7 @@ final class ColorCollectionManager: NSObject {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.allowsMultipleSelection = true
+        collectionView.allowsMultipleSelection = false
         collectionView.register(
             ColorCollectionViewCell.self,
             forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifier
@@ -36,6 +38,14 @@ final class ColorCollectionManager: NSObject {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: ColorsSupplementaryView.reuseIdentifier
         )
+    }
+    
+    func setSelectedColor(color: UIColor) {
+        selectedColor = color
+        if let index = UIColor.getIndex(color: color) {
+            let indexPath = IndexPath(row: index, section: 0)
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        }
     }
 }
 
@@ -54,6 +64,13 @@ extension ColorCollectionManager: UICollectionViewDataSource {
         ) as? ColorCollectionViewCell else {
             assertionFailure("Failed to dequeue \(ColorCollectionViewCell.reuseIdentifier)")
             return UICollectionViewCell()
+        }
+        
+        if let selectedColor, let index = UIColor.getIndex(color: selectedColor) {
+            if indexPath.row == index {
+                cell.contentView.layer.borderColor = selectedColor.withAlphaComponent(0.3).cgColor
+                self.selectedColor = nil
+            }
         }
         
         cell.cellColor = UIColor.getUIColor(index: indexPath.row + 1)
@@ -84,14 +101,15 @@ extension ColorCollectionManager: UICollectionViewDelegate {
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
-        collectionView.visibleCells.forEach { cell in
-            cell.contentView.layer.borderColor = UIColor.clear.cgColor
+        collectionView.visibleCells.forEach {
+            $0.contentView.layer.borderColor = UIColor.clear.cgColor
         }
         
         if let cell = collectionView.cellForItem(at: indexPath) {
             let color = UIColor.getUIColor(index: indexPath.row + 1)
             cell.contentView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
         }
+        
         presenter.updateColor(color: UIColor.getUIColor(index: indexPath.row + 1))
     }
     

@@ -1,24 +1,40 @@
 
 import UIKit
 
-final class NewTrackerViewController: UIViewController {
+final class EditTrackerViewController: UIViewController {
     
     // MARK: - Elements UI
-    private let scrollView = UIScrollView()
+    private let scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        return scroll
+    } ()
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     } ()
     
-    private let fieldContainer = UIView()
+    private let countDayLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    } ()
+    
+    private let fieldContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    } ()
     private let nameField = UITextField()
     private let warningLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = Localization.nameFieldMaxLengthLabel
         label.backgroundColor = .trackerWhite
         label.textColor = .trackerBorderRed
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -37,7 +53,7 @@ final class NewTrackerViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(Localization.cancelButton, for: .normal)
         button.setTitleColor(.trackerBorderRed, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
@@ -50,7 +66,6 @@ final class NewTrackerViewController: UIViewController {
     } ()
     private let createButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Создать", for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .trackerForLightGray
@@ -73,8 +88,8 @@ final class NewTrackerViewController: UIViewController {
     } ()
 
     // MARK: - Data and Managers
-    private let buttonsIdentifiers = ["Категория", "Расписание"]
-    private let placeholderText = "Введите название трекера"
+    private let buttonsIdentifiers = [Localization.categoryTitle, Localization.scheduleTitle]
+    private let placeholderText = Localization.trackerPlaceholder
     private let numberSection: Int = 2
     private var isWarningHidden = true
     
@@ -83,11 +98,14 @@ final class NewTrackerViewController: UIViewController {
     private var colorCollectionManager: ColorCollectionManager
 
     private var nameFieldManager: NameFieldManager
-    private let presenter: NewTrackerPresenterProtocol
+    private let presenter: EditTrackerPresenterProtocol
+    private var countRecords: Int = 0
+    private let isNewTracker: Bool
 
     // MARK: - Initializer
-    init(presenter: NewTrackerPresenterProtocol) {
+    init(presenter: EditTrackerPresenterProtocol, tracker: Tracker?, category: String?) {
         self.presenter = presenter
+        
         self.nameFieldManager = NameFieldManager(nameField: nameField,
             presenter: presenter, placeholder: placeholderText)
         self.emojiCollectionManager = EmojiCollectionManager(collectionView: emojiCollection,
@@ -95,10 +113,21 @@ final class NewTrackerViewController: UIViewController {
         self.colorCollectionManager = ColorCollectionManager(collectionView: colorCollection,
             presenter: presenter)
         
+        self.isNewTracker = tracker == nil
+        
         super.init(nibName: nil, bundle: nil)
         
-        self.presenter.configure(view: self)
         self.nameFieldManager.addDelegate(delegate: self)
+        
+        if let tracker {
+            self.nameField.text = tracker.name
+            self.emojiCollectionManager.setSelectedEmoji(emoji: tracker.emoji)
+            self.colorCollectionManager.setSelectedColor(color: tracker.color)
+            
+            self.countRecords = self.presenter.recordCount(trackerID: tracker.id)
+        }
+
+        self.presenter.configure(view: self, tracker: tracker, category: category)
     }
     
     @available(*, unavailable)
@@ -111,14 +140,17 @@ final class NewTrackerViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupGestureRecognizer()
+        
+        presenter.updateName(name: nameField.text)
     }
     
     // MARK: - Setup UI
     private func setupUI() {
         view.backgroundColor = .trackerWhite
-        
-        setupScrollVIew()
+
         setupMainLabel()
+        setupScrollVIew()
+        setupCountDayLabel()
         setupNameFieldContainer()
         setupNameField()
         setupButtonsTable()
@@ -130,46 +162,72 @@ final class NewTrackerViewController: UIViewController {
         setButtonDisable()
     }
     
-    private func setupScrollVIew() {
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
-        
+    private func setupMainLabel() {
+        titleLabel.text = isNewTracker ? Localization.newTrackerTitle : Localization.editTrackerTitle
+
+        view.addSubview(titleLabel)
+
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 17),
+            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 49)
         ])
     }
     
-    private func setupMainLabel() {
-        scrollView.addSubview(titleLabel)
+    private func setupScrollVIew() {
+        view.addSubview(scrollView)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 27),
-            titleLabel.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor)
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    private func setupCountDayLabel() {
+        if isNewTracker || countRecords == 0 { return }
+        
+        countDayLabel.text = Helpers.countDays(countDays: countRecords)
+        
+        scrollView.addSubview(countDayLabel)
+        
+        NSLayoutConstraint.activate([
+            countDayLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24),
+            countDayLabel.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            countDayLabel.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
+            countDayLabel.heightAnchor.constraint(equalToConstant: 38)
         ])
     }
     
     private func setupNameFieldContainer() {
-        fieldContainer.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(fieldContainer)
 
         textFieldContainerHeightConstraint = fieldContainer.heightAnchor.constraint(equalToConstant: 75)
         textFieldContainerHeightConstraint?.isActive = true
         
+        var textFieldContainerTopConstraint: NSLayoutConstraint
+        if isNewTracker || countRecords == 0 {
+            textFieldContainerTopConstraint = fieldContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24)
+        } else {
+            textFieldContainerTopConstraint = fieldContainer.topAnchor.constraint(equalTo: countDayLabel.bottomAnchor, constant: 40)
+        }
+        
         NSLayoutConstraint.activate([
             fieldContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            fieldContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
+            textFieldContainerTopConstraint,
             fieldContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
             fieldContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16)
         ])
     }
     
     private func setupNameField() {
+        nameField.translatesAutoresizingMaskIntoConstraints = false
         fieldContainer.addSubview(nameField)
         
         NSLayoutConstraint.activate([
+            nameField.topAnchor.constraint(equalTo: fieldContainer.topAnchor),
             nameField.heightAnchor.constraint(equalToConstant: 75),
             nameField.centerXAnchor.constraint(equalTo: fieldContainer.centerXAnchor),
             nameField.leadingAnchor.constraint(equalTo: fieldContainer.leadingAnchor),
@@ -243,6 +301,9 @@ final class NewTrackerViewController: UIViewController {
     }
     
     private func setupCreateButton() {
+        let titleCreateButton = isNewTracker ? Localization.createButton : Localization.saveButton
+        createButton.setTitle(titleCreateButton, for: .normal)
+
         createButton.addTarget(self, action: #selector(createButtonPressed), for: .touchUpInside)
 
         scrollView.addSubview(createButton)
@@ -287,7 +348,7 @@ final class NewTrackerViewController: UIViewController {
     }
 }
 
-extension NewTrackerViewController: NameFieldManagerDelegate {
+extension EditTrackerViewController: NameFieldManagerDelegate {
     func showWarningLabel() {
         if isWarningHidden {
             textFieldContainerHeightConstraint?.constant = 113
@@ -308,7 +369,7 @@ extension NewTrackerViewController: NameFieldManagerDelegate {
     }
 }
 
-extension NewTrackerViewController: NewTrackerViewControllerProtocol {
+extension EditTrackerViewController: EditTrackerViewControllerProtocol {
     func reloadButtonTable() {
         buttonTable.reloadData()
     }
@@ -322,7 +383,7 @@ extension NewTrackerViewController: NewTrackerViewControllerProtocol {
     }
 }
 
-extension NewTrackerViewController: UITableViewDelegate {
+extension EditTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: tableView.bounds.width, bottom: 0, right: 0)
@@ -336,11 +397,11 @@ extension NewTrackerViewController: UITableViewDelegate {
         var createViewController: UIViewController
 
         switch selectedOption {
-        case "Категория":
+        case Localization.categoryTitle:
             createViewController = CategoryViewController(
                 presenter: presenter,
                 selectedCategory: presenter.trackerForPresenter.category)
-        case "Расписание":
+        case Localization.scheduleTitle:
             createViewController = ScheduleViewController(presenter: presenter)
         default:
             return
@@ -351,7 +412,7 @@ extension NewTrackerViewController: UITableViewDelegate {
     }
 }
 
-extension NewTrackerViewController: UITableViewDataSource {
+extension EditTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return numberSection
     }
@@ -367,9 +428,9 @@ extension NewTrackerViewController: UITableViewDataSource {
         var descriptionText: String = ""
         
         switch identifier {
-        case "Категория":
+        case Localization.categoryTitle:
             descriptionText = presenter.categoryString()
-        case "Расписание":
+        case Localization.scheduleTitle:
             descriptionText = presenter.scheduleString()
         default:
             break

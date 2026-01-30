@@ -24,7 +24,7 @@ final class RecordDataProvider: NSObject {
         return controller
     } ()
     
-    init(trackerID: UUID, delegate: RecordDataProviderDelegate) {
+    init(trackerID: UUID, delegate: RecordDataProviderDelegate?) {
         self.trackerID = trackerID
         self.delegate = delegate
         

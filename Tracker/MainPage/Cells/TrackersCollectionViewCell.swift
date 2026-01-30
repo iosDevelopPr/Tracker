@@ -40,6 +40,13 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         return label
     } ()
     
+    private let pinImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .pin
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    } ()
+    
     private let footerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +74,10 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     private var date: Date?
     private var recordDataProvider: RecordDataProvider?
     
+    var editTracker: Binding<Void>?
+    var pinToggleTracker: Binding<Void>?
+    var deleteTracker: Binding<Void>?
+
     // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -89,6 +100,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setupData()
         setExecutionLabel()
         setExecutionButton()
+        setPinImage()
     }
 
     override func prepareForReuse() {
@@ -110,6 +122,9 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setupFooterView()
         setupRecordLabel()
         setupRecordButton()
+        
+        setupContextMenu()
+        setupPinIcon()
     }
     
     private func setupData() {
@@ -201,6 +216,22 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setExecutionButton()
     }
     
+    private func setupPinIcon() {
+        cardView.addSubview(pinImage)
+        
+        NSLayoutConstraint.activate([
+            pinImage.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 18),
+            pinImage.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
+            pinImage.widthAnchor.constraint(equalToConstant: 8),
+            pinImage.heightAnchor.constraint(equalToConstant: 12)
+        ])
+    }
+    
+    private func setupContextMenu() {
+        let interactions = UIContextMenuInteraction(delegate: self)
+        cardView.addInteraction(interactions)
+    }
+    
     // MARK: - Action
     @objc private func executionButtonTapped() {
         guard let date, date <= Date(), let recordDataProvider else { return }
@@ -223,33 +254,57 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
 
     private func setExecutionLabel() {
         guard let recordDataProvider = self.recordDataProvider else { return }
-        
-        let countExecutions = recordDataProvider.recordCount
-        var text: String = ""
-        
-        if countExecutions >= 11 && countExecutions <= 20 {
-            text = "дней"
-        } else {
-            let remainderValue = countExecutions % 10
-            switch remainderValue {
-            case 1:
-                text = "день"
-            case 2, 3, 4:
-                text = "дня"
-            default:
-                text = "дней"
-            }
-        }
-        executionLabel.text = "\(countExecutions) \(text)"
+        executionLabel.text = Helpers.countDays(countDays: recordDataProvider.recordCount)
+    }
+    
+    private func setPinImage() {
+        let isPinned = self.tracker?.isPinned ?? false
+        pinImage.isHidden = !isPinned
     }
 }
 
 extension TrackersCollectionViewCell: RecordDataProviderDelegate {
     func recordsDidUpdate(id: UUID) {
         guard id == self.tracker?.id else { return }
-        DispatchQueue.main.async {
+        //DispatchQueue.main.async {
             self.setExecutionLabel()
             self.setExecutionButton()
+            self.setPinImage()
+        //}
+    }
+}
+
+extension TrackersCollectionViewCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        let menu = UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            let isPinned = self.tracker?.isPinned ?? false
+            let pinAction = UIAction(
+                title: isPinned ? Localization.unpin : Localization.pin,
+                handler: { _ in
+                    self.pinToggleTracker?(())
+                }
+            )
+            let editAction = UIAction(
+                title: Localization.edit,
+                handler: { _ in
+                    self.editTracker?(())
+                }
+            )
+            let deleteAction = UIAction(
+                title: Localization.delete,
+                attributes: .destructive,
+                handler: { _ in
+                    self.deleteTracker?(())
+                }
+            )
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
         }
+        return menu
     }
 }

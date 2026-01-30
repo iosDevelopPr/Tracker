@@ -4,7 +4,7 @@ import UIKit
 final class EmojiCollectionManager: NSObject {
     // MARK: - Properties
     private let collectionView: UICollectionView
-    private let presenter: NewTrackerPresenterProtocol
+    private let presenter: EditTrackerPresenterProtocol
     
     private let cellHeight: Int = 52
     private let cellWidth: Int = 52
@@ -12,8 +12,10 @@ final class EmojiCollectionManager: NSObject {
     private let headerHeight: Double = 19
 
     private let sectionInsets: UIEdgeInsets = .init(top: 24, left: 18, bottom: 0, right: 19)
+    
+    private var selectedEmoji: Emoji?
 
-    init(collectionView: UICollectionView, presenter: NewTrackerPresenterProtocol) {
+    init(collectionView: UICollectionView, presenter: EditTrackerPresenterProtocol) {
         self.collectionView = collectionView
         self.presenter = presenter
         
@@ -35,6 +37,14 @@ final class EmojiCollectionManager: NSObject {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: EmojiSupplementaryView.reuseIdentifier
         )
+    }
+    
+    func setSelectedEmoji(emoji: Emoji) {
+        selectedEmoji = emoji
+        if let index = Emoji.allCases.firstIndex(of: emoji) {
+            let indexPath = IndexPath(row: index, section: 0)
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        }
     }
 }
 
@@ -83,6 +93,13 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
         ) as? EmojiCollectionViewCell else {
             assertionFailure("Failed to dequeue \(EmojiCollectionViewCell.reuseIdentifier)")
             return UICollectionViewCell()
+        }
+        
+        if let selectedEmoji, let index = Emoji.allCases.firstIndex(of: selectedEmoji) {
+            if indexPath.row == index {
+                cell.contentView.backgroundColor = .trackerLightGray
+                self.selectedEmoji = nil
+            }
         }
         
         cell.configure(with: Emoji.allCases[indexPath.row].rawValue)
