@@ -1,4 +1,8 @@
 
+onboardingButton = "Вот это технологии!";
+onboardingFirstPage = "Отслеживайте только то,\nчто хотите";
+onboardingSecondPage = "Даже если это\nне литры воды и йога";
+
 newTrackerTitle = "Новая привычка";
 editTrackerTitle = "Редактирование привычки";
 
@@ -9,6 +13,8 @@ search = "Поиск";
 statisticPlaceholder = "Анализировать пока нечего";
 nameFieldMaxLengthLabel = "Ограничение 38 символов";
 
+trackerListPlaceholder = "Что будем отслеживать?";
+categoryListPlaceholder = "Привычки и события можно\nобъединить по смыслу";
 trackerPlaceholder = "Введите название трекера";
 categoryPlaceholder = "Введите название категории";
 
@@ -18,6 +24,12 @@ schedule = "Расписание";
 cancel = "Отменить";
 create = "Создать";
 save = "Сохранить";
+ready = "Готово";
+addCategory = "Добавить категорию";
+newCategory = "Новая категория";
+
+color = "Цвет";
+emoji = "Emoji";
 
 pin = "Закрепить";
 pinned = "Закрепленные";

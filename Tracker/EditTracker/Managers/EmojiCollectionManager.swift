@@ -119,7 +119,7 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
             
-        view.titleLabel.text = "Emoji"
+            view.titleLabel.text = Localization.emojiTitle
         return view
     }
 }

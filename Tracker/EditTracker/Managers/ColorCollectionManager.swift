@@ -91,7 +91,7 @@ extension ColorCollectionManager: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        view.titleLabel.text = "Цвет"
+        view.titleLabel.text = Localization.colorTitle
         return view
     }
 }

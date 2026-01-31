@@ -8,7 +8,6 @@ final class CategoryTableViewCell: UITableViewCell {
     private let cellTextLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.text = "Tracker"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     } ()

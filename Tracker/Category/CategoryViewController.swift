@@ -12,7 +12,7 @@ final class CategoryViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = Localization.categoryTitle
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -21,7 +21,7 @@ final class CategoryViewController: UIViewController {
     
     private let textLabel: UILabel = {
         let Label = UILabel()
-        Label.text = "Привычки и события можно\nобъединить по смыслу"
+        Label.text = Localization.categoryListPlaceholder
         Label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         Label.textAlignment = .center
         Label.numberOfLines = 2
@@ -39,7 +39,7 @@ final class CategoryViewController: UIViewController {
     
     private let createButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(Localization.addCategoryButton, for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .trackerBackgroundBlack
@@ -87,8 +87,9 @@ final class CategoryViewController: UIViewController {
         view.addSubview(titleLabel)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 24),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 17),
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 49)
         ])
     }
 

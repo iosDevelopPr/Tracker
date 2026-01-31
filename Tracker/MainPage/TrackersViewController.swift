@@ -32,7 +32,7 @@ final class TrackersViewController: UIViewController {
     
     private let dizzyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = Localization.trackerListPlaceholder
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false

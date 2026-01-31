@@ -1,4 +1,8 @@
 
+onboardingButton = "These are technologies!";
+onboardingFirstPage = "Track only what\nyou want";
+onboardingSecondPage = "Even if it's not\nliters of water and yoga";
+
 newTrackerTitle = "New Habit";
 editTrackerTitle = "Habit editing";
 
@@ -9,6 +13,8 @@ search = "Search";
 statisticPlaceholder = "Nothing to analyze yet";
 nameFieldMaxLengthLabel = "Limit of 38 characters";
 
+trackerListPlaceholder = "What do we track?";
+categoryListPlaceholder = "Habits and events can\nbe grouped by meaning";
 trackerPlaceholder = "Enter tracker name";
 categoryPlaceholder = "Enter category name";
 
@@ -18,6 +24,12 @@ schedule = "Schedule";
 cancel = "Cancel";
 create = "Create";
 save = "Save";
+ready = "Ready";
+addCategory = "Add Category";
+newCategory = "New Category";
+
+color = "Color";
+emoji = "Emoji";
 
 pin = "Pin";
 pinned = "Pinned";

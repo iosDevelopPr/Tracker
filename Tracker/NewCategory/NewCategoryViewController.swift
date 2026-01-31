@@ -4,7 +4,7 @@ import UIKit
 final class NewCategoryViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = Localization.newCategoryTitle
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +26,7 @@ final class NewCategoryViewController: UIViewController {
     
     private let createButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(Localization.readyButton, for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +38,7 @@ final class NewCategoryViewController: UIViewController {
 
     private var textFieldContainerHeightConstraint: NSLayoutConstraint?
     private var isWarningHidden = true
-    private let placeholderCategory = "Введите название категории"
+    private let placeholderCategory = Localization.categoryPlaceholder
     private let maxSymbolsCountTextField = 50
     
     private var nameFieldManager: NameFieldManager?
@@ -66,8 +66,9 @@ final class NewCategoryViewController: UIViewController {
         view.addSubview(titleLabel)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 24),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 17),
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 49)
         ])
     }
     
@@ -80,18 +81,18 @@ final class NewCategoryViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             fieldContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            fieldContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
+            fieldContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
             fieldContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             fieldContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
 
     private func setupNameField() {
-        view.addSubview(nameField)
-        
+        fieldContainer.addSubview(nameField)
+   
         NSLayoutConstraint.activate([
             nameField.heightAnchor.constraint(equalToConstant: 75),
-            nameField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 34),
+            nameField.topAnchor.constraint(equalTo: fieldContainer.topAnchor),
             nameField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             nameField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])

@@ -138,6 +138,7 @@ final class EditTrackerViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupUI()
         setupGestureRecognizer()
         

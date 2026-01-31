@@ -4,7 +4,6 @@ import UIKit
 protocol EditTrackerPresenterProtocol {
     var trackerForPresenter: DataTrackerForPresenter { get }
     
-    //func configure(view: EditTrackerViewControllerProtocol)
     func configure(view: EditTrackerViewControllerProtocol, tracker: Tracker?, category: String?)
     
     func updateName(name: String?)

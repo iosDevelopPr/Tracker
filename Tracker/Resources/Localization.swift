@@ -2,7 +2,11 @@
 import Foundation
 
 enum Localization {
-    
+
+    static let onboardingButton = localized("onboardingButton")
+    static let onboardingFirstPage = localized("onboardingFirstPage")
+    static let onboardingSecondPage = localized("onboardingSecondPage")
+
     static let newTrackerTitle = localized("newTrackerTitle")
     static let editTrackerTitle = localized("editTrackerTitle")
 
@@ -13,15 +17,23 @@ enum Localization {
     static let statisticPlaceholder = localized("statisticPlaceholder")
     static let nameFieldMaxLengthLabel = localized("nameFieldMaxLengthLabel")
     
+    static let trackerListPlaceholder = localized("trackerListPlaceholder")
+    static let categoryListPlaceholder = localized("categoryListPlaceholder")
     static let trackerPlaceholder = localized("trackerPlaceholder")
     static let categoryPlaceholder = localized("categoryPlaceholder")
     
     static let categoryTitle = localized("category")
     static let scheduleTitle = localized("schedule")
+    static let addCategoryButton = localized("addCategory")
+    static let newCategoryTitle = localized("newCategory")
 
     static let cancelButton = localized("cancel")
     static let createButton = localized("create")
     static let saveButton = localized("save")
+    static let readyButton = localized("ready")
+    
+    static let colorTitle = localized("color")
+    static let emojiTitle = localized("emoji")
 
     static let pin = localized("pin")
     static let pinned = localized("pinned")

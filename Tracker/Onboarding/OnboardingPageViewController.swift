@@ -20,10 +20,10 @@ final class OnboardingPageViewController: UIPageViewController {
         pages = [
             OnboardingSlideViewController(
                 imageName: "OnboardingFirst",
-                labelText: "Отслеживайте только то,\nчто хотите"),
+                labelText: Localization.onboardingFirstPage),
             OnboardingSlideViewController(
                 imageName: "OnboardingSecond",
-                labelText: "Даже если это\nне литры воды и йога")
+                labelText: Localization.onboardingSecondPage)
         ]
         
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
