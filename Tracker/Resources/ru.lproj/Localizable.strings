@@ -27,6 +27,7 @@ save = "Сохранить";
 ready = "Готово";
 addCategory = "Добавить категорию";
 newCategory = "Новая категория";
+editCategory = "Редактирование категории";
 
 color = "Цвет";
 emoji = "Emoji";

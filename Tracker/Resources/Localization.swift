@@ -26,6 +26,7 @@ enum Localization {
     static let scheduleTitle = localized("schedule")
     static let addCategoryButton = localized("addCategory")
     static let newCategoryTitle = localized("newCategory")
+    static let editCategoryTitle = localized("editCategory")
 
     static let cancelButton = localized("cancel")
     static let createButton = localized("create")

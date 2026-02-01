@@ -151,17 +151,24 @@ final class CategoryViewController: UIViewController {
             selectedCategory: selectedCategory,
             viewModel: viewModel
         )
+        
+        trackerTableViewManager?.viewPresenter = { [weak self] viewForPresent in
+            self?.present(viewForPresent, animated: true)
+        }
     }
 
     @objc private func createButtonTapped() {
-        let createCategoryViewController = NewCategoryViewController()
+        let createCategoryViewController = EditCategoryViewController(nameCategory: nil)
         createCategoryViewController.modalPresentationStyle = .pageSheet
         present(createCategoryViewController, animated: true)
     }
     
-    func categorySelected(selectedCategory: TrackerCategory) {
-        presenter.updateCategory(category: selectedCategory.name)
-        dismiss(animated: true)
+    func categorySelected(selectedCategory: TrackerCategory?) {
+        let selectedName = selectedCategory?.name
+        presenter.updateCategory(category: selectedName)
+        if selectedName != nil {
+            dismiss(animated: true)
+        }
     }
     
     func listCategoryEmpty(isEmpty: Bool) {

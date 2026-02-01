@@ -93,7 +93,10 @@ final class EditTrackerViewController: UIViewController {
     private let numberSection: Int = 2
     private var isWarningHidden = true
     
+    private var countDayHeightConstraint: NSLayoutConstraint?
     private var textFieldContainerHeightConstraint: NSLayoutConstraint?
+    private var textFieldContainerTopConstraint: NSLayoutConstraint?
+    
     private var emojiCollectionManager: EmojiCollectionManager
     private var colorCollectionManager: ColorCollectionManager
 
@@ -141,8 +144,6 @@ final class EditTrackerViewController: UIViewController {
         
         setupUI()
         setupGestureRecognizer()
-        
-        presenter.updateName(name: nameField.text)
     }
     
     // MARK: - Setup UI
@@ -161,6 +162,8 @@ final class EditTrackerViewController: UIViewController {
         setupCreateButton()
         
         setButtonDisable()
+        
+        presenter.updateName(name: nameField.text)
     }
     
     private func setupMainLabel() {
@@ -194,11 +197,13 @@ final class EditTrackerViewController: UIViewController {
         
         scrollView.addSubview(countDayLabel)
         
+        countDayHeightConstraint = countDayLabel.heightAnchor.constraint(equalToConstant: 38)
+        countDayHeightConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
             countDayLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24),
             countDayLabel.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
-            countDayLabel.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
-            countDayLabel.heightAnchor.constraint(equalToConstant: 38)
+            countDayLabel.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16)
         ])
     }
     
@@ -208,16 +213,18 @@ final class EditTrackerViewController: UIViewController {
         textFieldContainerHeightConstraint = fieldContainer.heightAnchor.constraint(equalToConstant: 75)
         textFieldContainerHeightConstraint?.isActive = true
         
-        var textFieldContainerTopConstraint: NSLayoutConstraint
+        //var textFieldContainerTopConstraint: NSLayoutConstraint
         if isNewTracker || countRecords == 0 {
             textFieldContainerTopConstraint = fieldContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24)
+            textFieldContainerTopConstraint?.isActive = true
         } else {
             textFieldContainerTopConstraint = fieldContainer.topAnchor.constraint(equalTo: countDayLabel.bottomAnchor, constant: 40)
+            textFieldContainerTopConstraint?.isActive = true
         }
         
         NSLayoutConstraint.activate([
             fieldContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            textFieldContainerTopConstraint,
+            //textFieldContainerTopConstraint,
             fieldContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
             fieldContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16)
         ])
@@ -380,6 +387,15 @@ extension EditTrackerViewController: EditTrackerViewControllerProtocol {
             setButtonEnable()
         } else {
             setButtonDisable()
+        }
+    }
+    
+    func updateViewMode() {
+        if scrollView.subviews.contains(countDayLabel) {
+            countDayLabel.isHidden = true
+            countDayHeightConstraint?.constant = 0
+            textFieldContainerTopConstraint?.constant = 0
+            titleLabel.text = Localization.newTrackerTitle
         }
     }
 }

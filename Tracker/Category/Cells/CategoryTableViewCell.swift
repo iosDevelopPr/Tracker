@@ -23,10 +23,14 @@ final class CategoryTableViewCell: UITableViewCell {
     private let rightIdent: CGFloat = 41
     private let topIdent: CGFloat = 27
     private let bottomIdent: CGFloat = 26
+    
+    var editCategory: Binding<Void>?
+    var deleteCategory: Binding<Void>?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupContextMenu()
     }
     
     @available(*, unavailable)
@@ -56,6 +60,11 @@ final class CategoryTableViewCell: UITableViewCell {
         
         rightImageView.isHidden = true
     }
+    
+    private func setupContextMenu() {
+        let interactions = UIContextMenuInteraction(delegate: self)
+        contentView.addInteraction(interactions)
+    }
 
     func configure(text: String, isSelected: Bool, isFirst: Bool, isLast: Bool) {
         cellTextLabel.text = text
@@ -76,6 +85,25 @@ final class CategoryTableViewCell: UITableViewCell {
             contentView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         } else {
             contentView.layer.cornerRadius = 0
+        }
+    }
+}
+
+extension CategoryTableViewCell: UIContextMenuInteractionDelegate {
+    public func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
+            let editAction = UIAction(title: "Редактировать") { _ in
+                self?.editCategory?(())
+            }
+            
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { _ in
+                self?.deleteCategory?(())
+            }
+            
+            return UIMenu(title: "", children: [editAction, deleteAction])
         }
     }
 }

@@ -5,7 +5,7 @@ import CoreData
 final class CategoryDataProvider: NSObject {
     
     private let dataStore: TrackerCategoryStore = TrackerCategoryStore()
-    private weak var delegate: DataProviderDelegate?
+    weak var delegate: DataProviderDelegate?
     
     private lazy var fetchedResultsController: NSFetchedResultsController<CategoryCoreData> = {
         let fetchRequest: NSFetchRequest<CategoryCoreData> = CategoryCoreData.fetchRequest()
@@ -22,9 +22,7 @@ final class CategoryDataProvider: NSObject {
         return controller
     } ()
     
-    init(delegate: DataProviderDelegate?) {
-        self.delegate = delegate
-        
+    override init() {
         super.init()
         
         do {
@@ -36,6 +34,14 @@ final class CategoryDataProvider: NSObject {
     
     func addCategory(name: String) throws {
         try dataStore.addCategory(name: name)
+    }
+    
+    func deleteCategory(name: String) throws {
+        try dataStore.deleteCategory(name: name)
+    }
+    
+    func updateCategory(name: String, nameOld: String) throws {
+        try dataStore.updateCategory(name: name, nameOld: nameOld)
     }
     
     func getCategories() -> [TrackerCategory] {

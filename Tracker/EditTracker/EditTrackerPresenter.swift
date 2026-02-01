@@ -59,6 +59,10 @@ final class EditTrackerPresenter: EditTrackerPresenterProtocol {
         )
         
         trackerForPresenter = newTracker
+        
+        if newCategory == nil {
+            view?.updateViewMode()
+        }
     }
     
     func updateEmoji(emoji: Emoji?) {

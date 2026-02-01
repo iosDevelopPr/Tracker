@@ -1,10 +1,9 @@
 
 import UIKit
 
-final class NewCategoryViewController: UIViewController {
+final class EditCategoryViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = Localization.newCategoryTitle
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -15,7 +14,7 @@ final class NewCategoryViewController: UIViewController {
     private let nameField = UITextField()
     private let warningLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 50 символов"
+        label.text = Localization.nameFieldMaxLengthLabel
         label.backgroundColor = .trackerWhite
         label.textColor = .trackerBorderRed
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -39,10 +38,21 @@ final class NewCategoryViewController: UIViewController {
     private var textFieldContainerHeightConstraint: NSLayoutConstraint?
     private var isWarningHidden = true
     private let placeholderCategory = Localization.categoryPlaceholder
-    private let maxSymbolsCountTextField = 50
+    private let maxSymbolsCountTextField = 38
     
     private var nameFieldManager: NameFieldManager?
-
+    private let editNameCategory: String?
+    
+    init(nameCategory: String?) {
+        self.editNameCategory = nameCategory
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        nil
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -59,10 +69,24 @@ final class NewCategoryViewController: UIViewController {
         setupGestureRecognizer()
         
         setButtonDisable()
-        nameField.delegate = self
+        
+        if let editNameCategory {
+            self.nameField.text = editNameCategory
+            
+            let symbolsCount = nameField.text?.count ?? 0
+            if symbolsCount > 0 && symbolsCount <= maxSymbolsCountTextField {
+                setButtonEnable()
+            }
+        }
     }
     
     private func setupTitle() {
+        if editNameCategory != nil {
+            titleLabel.text = Localization.editCategoryTitle
+        } else {
+            titleLabel.text = Localization.newCategoryTitle
+        }
+        
         view.addSubview(titleLabel)
 
         NSLayoutConstraint.activate([
@@ -151,13 +175,19 @@ final class NewCategoryViewController: UIViewController {
 
     @objc private func createButtonTapped() {
         guard let nameCategory = nameField.text, !nameCategory.isEmpty else { return }
-        let categoryDataProvider = CategoryDataProvider(delegate: nil)
-        try? categoryDataProvider.addCategory(name: nameCategory)
+        let categoryDataProvider = CategoryDataProvider()
+        
+        if let editNameCategory {
+            try? categoryDataProvider.updateCategory(name: nameCategory, nameOld: editNameCategory)
+        } else {
+            try? categoryDataProvider.addCategory(name: nameCategory)
+        }
+        
         dismiss(animated: true)
     }
 }
 
-extension NewCategoryViewController: NameFieldManagerDelegate {
+extension EditCategoryViewController: NameFieldManagerDelegate {
     func showWarningLabel() {
         if isWarningHidden {
             textFieldContainerHeightConstraint?.constant = 113
@@ -175,7 +205,7 @@ extension NewCategoryViewController: NameFieldManagerDelegate {
     }
 }
 
-extension NewCategoryViewController: UITextFieldDelegate {
+extension EditCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

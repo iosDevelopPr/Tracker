@@ -27,6 +27,7 @@ save = "Save";
 ready = "Ready";
 addCategory = "Add Category";
 newCategory = "New Category";
+editCategory = "Edit Category";
 
 color = "Color";
 emoji = "Emoji";

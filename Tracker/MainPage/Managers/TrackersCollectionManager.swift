@@ -17,6 +17,8 @@ final class TrackersCollectionManager: NSObject {
     private let delegate: TrackersCollectionDelegate
     
     private var trackerDataProvider: TrackerDataProvider
+    private var categoryDataProvider: CategoryDataProvider
+    
     private var categories: [TrackerCategory] = []
     
     // MARK: - Initializer
@@ -26,10 +28,12 @@ final class TrackersCollectionManager: NSObject {
         self.delegate = delegate
 
         self.trackerDataProvider = TrackerDataProvider()
+        self.categoryDataProvider = CategoryDataProvider()
 
         super.init()
         
         self.trackerDataProvider.delegate = self
+        self.categoryDataProvider.delegate = self
 
         configurePicker()
         configureCollectionView()
