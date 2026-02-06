@@ -66,7 +66,7 @@ final class TrackersViewController: UIViewController {
         datePicker.layer.cornerRadius = 8
         datePicker.layer.masksToBounds = true
         
-        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.locale = Locale.current
         return datePicker
     } ()
     
@@ -82,6 +82,22 @@ final class TrackersViewController: UIViewController {
         return label
     } ()
     
+    private let badSearchImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .badSearch
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    } ()
+    
+    private let badSearchLabel: UILabel = {
+        let label = UILabel()
+        label.text = Localization.badSearchPlaceholder
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    } ()
+    
     private var trackerCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout())
@@ -90,6 +106,7 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Properties
     private var trackersCollectionManager: TrackersCollectionManager?
+    private var filterManager: FilterManager?
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -100,6 +117,10 @@ final class TrackersViewController: UIViewController {
         setupGestureRecognizer()
         
         searchBar.delegate = self
+        searchBar.searchTextField.delegate = self
+        
+        filterManager = FilterManager()
+        filterManager?.view = self
     }
     
     // MARK: - Actions
@@ -141,6 +162,7 @@ final class TrackersViewController: UIViewController {
         setupDizzyLabel()
         setupDatePicker()
         setupTrackerCollection()
+        setupBadSearch()
         
         updateUI()
     }
@@ -236,18 +258,56 @@ final class TrackersViewController: UIViewController {
         ])
     }
     
+    private func setupBadSearch() {
+        view.addSubview(badSearchImage)
+        
+        NSLayoutConstraint.activate([
+            badSearchImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            badSearchImage.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    
+        view.addSubview(badSearchLabel)
+        
+        NSLayoutConstraint.activate([
+            badSearchLabel.topAnchor.constraint(equalTo: badSearchImage.bottomAnchor, constant: 8),
+            badSearchLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            badSearchLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+
     private func setCollectionHidden(hidden: Bool) {
         trackerCollection.isHidden = hidden
-        dizzyImage.isHidden = !hidden
-        dizzyLabel.isHidden = !hidden
+    }
+    
+    private func setDizzy(hidden: Bool) {
+        dizzyImage.isHidden = hidden
+        dizzyLabel.isHidden = hidden
+    }
+
+    private func setBadSearch(hidden: Bool) {
+        badSearchImage.isHidden = hidden
+        badSearchLabel.isHidden = hidden
     }
 }
 
 extension TrackersViewController: TrackersCollectionDelegate {
     func updateUI() {
-        let day = Schedule.dayOfWeek(date: datePicker.date)
-        let hasTrackers = trackersCollectionManager?.hasTrackers(day: day) ?? false
-        setCollectionHidden(hidden: !hasTrackers)
+        let hasTrackers = trackersCollectionManager?.hasTrackers() ?? false
+        let searchText = searchBar.text ?? ""
+        
+        if hasTrackers {
+            setCollectionHidden(hidden: false)
+            setDizzy(hidden: true)
+            setBadSearch(hidden: true)
+        } else if searchText.isEmpty {
+            setCollectionHidden(hidden: true)
+            setDizzy(hidden: false)
+            setBadSearch(hidden: true)
+        } else {
+            setCollectionHidden(hidden: true)
+            setDizzy(hidden: true)
+            setBadSearch(hidden: false)
+        }
     }
 }
 
@@ -256,5 +316,22 @@ extension TrackersViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
 
         let searchText = searchBar.text ?? ""
+        updateUI()
+    }
+}
+
+extension TrackersViewController: UITextFieldDelegate {
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        searchBar.resignFirstResponder()
+        searchBar.searchTextField.text = ""
+        updateUI()
+        
+        return true
+    }
+}
+
+extension TrackersViewController: FiltersViewProtocol {
+    func setFilter() {
+        
     }
 }

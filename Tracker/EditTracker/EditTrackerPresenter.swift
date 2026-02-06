@@ -156,7 +156,13 @@ final class EditTrackerPresenter: EditTrackerPresenterProtocol {
         return newTracker
     }
     
-    func recordCount(trackerID: UUID) -> Int {
+    func recordCount() -> Int {
+        guard let trackerID = trackerForPresenter.id else { return 0 }
         return RecordDataProvider(trackerID: trackerID, delegate: nil).recordCount
+    }
+    
+    func trackerExists() -> Bool {
+        guard let trackerID = trackerForPresenter.id else { return false }
+        return TrackerDataProvider().trackerExists(id: trackerID)
     }
 }

@@ -17,5 +17,6 @@ protocol EditTrackerPresenterProtocol {
 
     func saveTracker() throws
     
-    func recordCount(trackerID: UUID) -> Int
+    func recordCount() -> Int
+    func trackerExists() -> Bool
 }

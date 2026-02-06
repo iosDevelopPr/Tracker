@@ -20,6 +20,7 @@ final class TrackersCollectionManager: NSObject {
     private var categoryDataProvider: CategoryDataProvider
     
     private var categories: [TrackerCategory] = []
+    private var hasAnyTrackers: Bool = false
     
     // MARK: - Initializer
     init(collectionView: UICollectionView, picker: UIDatePicker, delegate: TrackersCollectionDelegate) {
@@ -63,18 +64,16 @@ final class TrackersCollectionManager: NSObject {
 
     private func updateDate(date: Date) {
         categories = trackerDataProvider.getCategoriesWithTrackers(date: date)
+        hasAnyTrackers = !categories.isEmpty
+        
         collectionView.reloadData()
         delegate.updateUI()
     }
     
-    func hasTrackers(day: Schedule) -> Bool {
-        return categories.contains { category in
-            category.trackers.contains { tracker in
-                tracker.schedule?.contains(day) ?? false
-            }
-        }
+    func hasTrackers() -> Bool {
+        return hasAnyTrackers
     }
-    
+
     private func showDeleteConfirmation(tracker: Tracker) {
         let alert = UIAlertController(
             title: nil,

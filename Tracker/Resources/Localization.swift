@@ -18,6 +18,7 @@ enum Localization {
     static let nameFieldMaxLengthLabel = localized("nameFieldMaxLengthLabel")
     
     static let trackerListPlaceholder = localized("trackerListPlaceholder")
+    static let badSearchPlaceholder = localized("badSearchPlaceholder")
     static let categoryListPlaceholder = localized("categoryListPlaceholder")
     static let trackerPlaceholder = localized("trackerPlaceholder")
     static let categoryPlaceholder = localized("categoryPlaceholder")
@@ -35,6 +36,13 @@ enum Localization {
     
     static let colorTitle = localized("color")
     static let emojiTitle = localized("emoji")
+    
+    static let filters = localized("filters")
+    
+    static let allTrackers = localized("allTrackers")
+    static let trackersForToday = localized("trackersForToday")
+    static let finished = localized("finished")
+    static let notFinished = localized("notFinished")
 
     static let pin = localized("pin")
     static let pinned = localized("pinned")

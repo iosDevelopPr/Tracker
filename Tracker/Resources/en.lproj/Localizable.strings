@@ -14,6 +14,7 @@ statisticPlaceholder = "Nothing to analyze yet";
 nameFieldMaxLengthLabel = "Limit of 38 characters";
 
 trackerListPlaceholder = "What do we track?";
+badSearchPlaceholder = "Nothing found";
 categoryListPlaceholder = "Habits and events can\nbe grouped by meaning";
 trackerPlaceholder = "Enter tracker name";
 categoryPlaceholder = "Enter category name";
@@ -31,6 +32,13 @@ editCategory = "Edit Category";
 
 color = "Color";
 emoji = "Emoji";
+
+filters = "Filters";
+
+allTrackers = "All trackers";
+trackersForToday = "Trackers for today";
+finished = "Finished";
+notFinished = "Not finished";
 
 pin = "Pin";
 pinned = "Pinned";

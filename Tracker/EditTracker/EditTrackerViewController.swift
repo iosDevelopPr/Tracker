@@ -121,16 +121,15 @@ final class EditTrackerViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.nameFieldManager.addDelegate(delegate: self)
-        
+        self.presenter.configure(view: self, tracker: tracker, category: category)
+
         if let tracker {
             self.nameField.text = tracker.name
             self.emojiCollectionManager.setSelectedEmoji(emoji: tracker.emoji)
             self.colorCollectionManager.setSelectedColor(color: tracker.color)
             
-            self.countRecords = self.presenter.recordCount(trackerID: tracker.id)
+            self.countRecords = self.presenter.recordCount()
         }
-
-        self.presenter.configure(view: self, tracker: tracker, category: category)
     }
     
     @available(*, unavailable)
@@ -213,7 +212,6 @@ final class EditTrackerViewController: UIViewController {
         textFieldContainerHeightConstraint = fieldContainer.heightAnchor.constraint(equalToConstant: 75)
         textFieldContainerHeightConstraint?.isActive = true
         
-        //var textFieldContainerTopConstraint: NSLayoutConstraint
         if isNewTracker || countRecords == 0 {
             textFieldContainerTopConstraint = fieldContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24)
             textFieldContainerTopConstraint?.isActive = true
@@ -224,7 +222,6 @@ final class EditTrackerViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             fieldContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            //textFieldContainerTopConstraint,
             fieldContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
             fieldContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16)
         ])
@@ -391,6 +388,8 @@ extension EditTrackerViewController: EditTrackerViewControllerProtocol {
     }
     
     func updateViewMode() {
+        guard !presenter.trackerExists() else { return }
+        
         if scrollView.subviews.contains(countDayLabel) {
             countDayLabel.isHidden = true
             countDayHeightConstraint?.constant = 0

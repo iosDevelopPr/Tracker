@@ -66,7 +66,7 @@ final class TrackerDataProvider: NSObject {
     func updateTracker(tracker: Tracker, categoryName: String) throws {
         try dataStore.updateTracker(tracker: tracker, categoryName: categoryName)
     }
-    
+
     func deleteTracker(tracker: Tracker) {
         try? dataStore.deleteTracker(tracker: tracker)
     }
@@ -75,6 +75,12 @@ final class TrackerDataProvider: NSObject {
         try? dataStore.togglePin(tracker: tracker)
     }
     
+    func trackerExists(id: UUID) -> Bool {
+        do {
+            return try dataStore.trackerExists(id: id)
+        } catch { return false }
+    }
+
     func getCategoryForTracker(id: UUID) -> String? {
         return try? dataStore.getCategoryForTracker(id: id)
     }

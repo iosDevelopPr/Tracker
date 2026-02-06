@@ -14,6 +14,7 @@ statisticPlaceholder = "Анализировать пока нечего";
 nameFieldMaxLengthLabel = "Ограничение 38 символов";
 
 trackerListPlaceholder = "Что будем отслеживать?";
+badSearchPlaceholder = "Ничего не найдено";
 categoryListPlaceholder = "Привычки и события можно\nобъединить по смыслу";
 trackerPlaceholder = "Введите название трекера";
 categoryPlaceholder = "Введите название категории";
@@ -31,6 +32,13 @@ editCategory = "Редактирование категории";
 
 color = "Цвет";
 emoji = "Emoji";
+
+filters = "Фильтры";
+
+allTrackers = "Все трекеры";
+trackersForToday = "Трекеры на сегодня";
+finished = "Завершенные";
+notFinished = "Не завершенные";
 
 pin = "Закрепить";
 pinned = "Закрепленные";
