@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		787E9DA32F4238F1004BFE57 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 787E9DA22F4238F1004BFE57 /* InlineSnapshotTesting */; };
+		787E9DA52F4238FE004BFE57 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 787E9DA42F4238FE004BFE57 /* SnapshotTesting */; };
+		787E9DA72F423902004BFE57 /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 787E9DA62F423902004BFE57 /* SnapshotTestingCustomDump */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		787E9C5F2F4229C3004BFE57 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -59,6 +65,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				787E9DA72F423902004BFE57 /* SnapshotTestingCustomDump in Frameworks */,
+				787E9DA32F4238F1004BFE57 /* InlineSnapshotTesting in Frameworks */,
+				787E9DA52F4238FE004BFE57 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +79,7 @@
 			children = (
 				785074472ED70B48004887F5 /* Tracker */,
 				787E9C5C2F4229C3004BFE57 /* TrackerTests */,
+				787E9DA12F4238F1004BFE57 /* Frameworks */,
 				785074462ED70B48004887F5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,6 +91,13 @@
 				787E9C5B2F4229C3004BFE57 /* TrackerTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		787E9DA12F4238F1004BFE57 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,6 +143,9 @@
 			);
 			name = TrackerTests;
 			packageProductDependencies = (
+				787E9DA22F4238F1004BFE57 /* InlineSnapshotTesting */,
+				787E9DA42F4238FE004BFE57 /* SnapshotTesting */,
+				787E9DA62F423902004BFE57 /* SnapshotTestingCustomDump */,
 			);
 			productName = TrackerTests;
 			productReference = 787E9C5B2F4229C3004BFE57 /* TrackerTests.xctest */;
@@ -161,6 +181,7 @@
 			mainGroup = 7850743C2ED70B48004887F5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				787E9D012F422B43004BFE57 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 785074462ED70B48004887F5 /* Products */;
@@ -490,6 +511,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		787E9D012F422B43004BFE57 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.9;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		787E9DA22F4238F1004BFE57 /* InlineSnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 787E9D012F422B43004BFE57 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = InlineSnapshotTesting;
+		};
+		787E9DA42F4238FE004BFE57 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 787E9D012F422B43004BFE57 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		787E9DA62F423902004BFE57 /* SnapshotTestingCustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 787E9D012F422B43004BFE57 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTestingCustomDump;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7850743D2ED70B48004887F5 /* Project object */;
 }
