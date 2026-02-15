@@ -1,13 +1,13 @@
 import Foundation
 
 enum Schedule: String, CaseIterable, Codable {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case saturday = "Суббота"
-    case sunday = "Воскресенье"
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
+    case sunday
     
     static func dayOfWeek(date: Date) -> Schedule {
         let calendar = Calendar.current
@@ -15,6 +15,18 @@ enum Schedule: String, CaseIterable, Codable {
         return getSchedule(day: weekday)
     }
     
+    var localized: String {
+        switch self {
+        case .monday: return Localization.locMonday
+        case .tuesday: return Localization.locTuesday
+        case .wednesday: return Localization.locWednesday
+        case .thursday: return Localization.locThursday
+        case .friday: return Localization.locFriday
+        case .saturday: return Localization.locSaturday
+        case .sunday: return Localization.locSunday
+        }
+    }
+
     static func getSchedule(day: Int) -> Schedule {
         switch day {
         case 1: return .sunday
@@ -28,18 +40,18 @@ enum Schedule: String, CaseIterable, Codable {
         }
     }
 
-    func shortName() -> String {
+    var shortName: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Сб"
-        case .sunday: return "Вс"
+        case .monday: return Localization.locMondayShort
+        case .tuesday: return Localization.locTuesdayShort
+        case .wednesday: return Localization.locWednesdayShort
+        case .thursday: return Localization.locThursdayShort
+        case .friday: return Localization.locFridayShort
+        case .saturday: return Localization.locSaturdayShort
+        case .sunday: return Localization.locSundayShort
         }
     }
-    
+
     func getNameInt() -> String {
         switch self {
         case .monday: return "2"
@@ -56,11 +68,11 @@ enum Schedule: String, CaseIterable, Codable {
 
     static func scheduleString(schedule: Set<Schedule>) -> String {
         if schedule.count == 7 {
-            return "Каждый день"
+            return Localization.everyDay
         }
         let sortedDays = schedule.sorted {
             sortedOrder.firstIndex(of: $0)! < sortedOrder.firstIndex(of: $1)!
         }
-        return sortedDays.map { $0.shortName() }.joined(separator: ", ")
+        return sortedDays.map { $0.shortName }.joined(separator: ", ")
     }
 }

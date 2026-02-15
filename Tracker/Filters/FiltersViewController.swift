@@ -30,6 +30,18 @@ final class FiltersViewController: UIViewController {
     ]
     
     var delegate: FiltersViewProtocol?
+    private let filter: FilterChoice
+    
+    init(filter: FilterChoice) {
+        self.filter = filter
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        nil
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,13 +107,13 @@ extension FiltersViewController: UITableViewDataSource {
 
         switch identifier {
         case Localization.allTrackers:
-            cell.configure(title: identifier, isSelected: true)
+            cell.configure(title: identifier, isSelected: filter == .all)
         case Localization.trackersForToday:
-            cell.configure(title: identifier, isSelected: true)
+            cell.configure(title: identifier, isSelected: filter == .today)
         case Localization.finished:
-            cell.configure(title: identifier, isSelected: true)
+            cell.configure(title: identifier, isSelected: filter == .finished)
         case Localization.notFinished:
-            cell.configure(title: identifier, isSelected: true)
+            cell.configure(title: identifier, isSelected: filter == .notFinished)
         default:
             break
         }
@@ -121,13 +133,13 @@ extension FiltersViewController: UITableViewDelegate {
         
         switch selectedOption {
         case Localization.allTrackers:
-            delegate?.setFilter()
+            delegate?.setFilter(filter: .all)
         case Localization.trackersForToday:
-            delegate?.setFilter()
+            delegate?.setFilter(filter: .today)
         case Localization.finished:
-            delegate?.setFilter()
+            delegate?.setFilter(filter: .finished)
         case Localization.notFinished:
-            delegate?.setFilter()
+            delegate?.setFilter(filter: .notFinished)
         default:
             break
         }

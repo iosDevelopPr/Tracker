@@ -142,7 +142,7 @@ extension ScheduleViewController: UITableViewDataSource {
     private func configureCell(_ cell: UITableViewCell, for indexPath: IndexPath) {
         let schedule = Schedule.allCases[indexPath.row]
 
-        cell.textLabel?.text = schedule.rawValue
+        cell.textLabel?.text = schedule.localized
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         cell.backgroundColor = .systemGray6
         cell.selectionStyle = .none

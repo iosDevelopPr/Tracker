@@ -18,10 +18,14 @@ final class TrackersCollectionManager: NSObject {
     
     private var trackerDataProvider: TrackerDataProvider
     private var categoryDataProvider: CategoryDataProvider
+    private let recordDataStore: TrackerRecordStore
     
     private var categories: [TrackerCategory] = []
-    private var hasAnyTrackers: Bool = false
+    private(set) var hasTrackers: Bool = false
     
+    private var searchText: String?
+    private var filter: FilterChoice = .all
+
     // MARK: - Initializer
     init(collectionView: UICollectionView, picker: UIDatePicker, delegate: TrackersCollectionDelegate) {
         self.collectionView = collectionView
@@ -30,6 +34,7 @@ final class TrackersCollectionManager: NSObject {
 
         self.trackerDataProvider = TrackerDataProvider()
         self.categoryDataProvider = CategoryDataProvider()
+        self.recordDataStore = TrackerRecordStore()
 
         super.init()
         
@@ -64,14 +69,12 @@ final class TrackersCollectionManager: NSObject {
 
     private func updateDate(date: Date) {
         categories = trackerDataProvider.getCategoriesWithTrackers(date: date)
-        hasAnyTrackers = !categories.isEmpty
+        hasTrackers = !categories.isEmpty
+        
+        filterAndSearchAction()
         
         collectionView.reloadData()
         delegate.updateUI()
-    }
-    
-    func hasTrackers() -> Bool {
-        return hasAnyTrackers
     }
 
     private func showDeleteConfirmation(tracker: Tracker) {
@@ -106,6 +109,54 @@ final class TrackersCollectionManager: NSObject {
             presenter: editTrackerPresenter, tracker: tracker, category: category)
         editTrackerViewController.modalPresentationStyle = .pageSheet
         delegate.present(editTrackerViewController, animated: true)
+    }
+    
+    func setSearchText(searchText: String) {
+        self.searchText = searchText == "" ? nil : searchText
+        //filterAndSearchAction()
+        //self.collectionView.reloadData()
+        updateDate(date: picker.date)
+    }
+    
+    func setFilter(filter: FilterChoice) {
+        self.filter = filter
+        //filterAndSearchAction()
+        updateDate(date: picker.date)
+    }
+    
+    func getFilter() -> FilterChoice {
+        return filter
+    }
+    
+    private func filterAndSearchAction() {
+        
+        if filter == .finished || filter == .notFinished {
+            categories = categories.compactMap { category in
+                let filteredTrackers = category.trackers.filter { tracker in
+                    let hasRecord = recordDataStore.hasRecord(id: tracker.id, date: picker.date)
+                    return (hasRecord && filter == .finished) || (!hasRecord && filter == .notFinished)
+                }
+                
+                return filteredTrackers.isEmpty ? nil : TrackerCategory(
+                    name: category.name,
+                    trackers: filteredTrackers
+                )
+            }
+        }
+
+        // ------------------------------------
+        guard let searchText, !searchText.isEmpty else { return }
+        
+        categories = categories.compactMap { category in
+            let filteredTrackers = category.trackers.filter { tracker in
+                tracker.name.lowercased().contains(searchText.lowercased())
+            }.sorted { $0.name < $1.name }
+            
+            return filteredTrackers.isEmpty ? nil : TrackerCategory(
+                name: category.name,
+                trackers: filteredTrackers
+            )
+        }
     }
 
     // MARK: - Actions

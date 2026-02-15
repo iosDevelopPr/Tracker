@@ -51,6 +51,24 @@ enum Localization {
     static let delete = localized("delete")
     static let deleteConfirmation = localized("deleteConfirmation")
     
+    static let everyDay = localized("everyDay")
+    
+    static let locMonday = localized("locMonday")
+    static let locTuesday = localized("locTuesday")
+    static let locWednesday = localized("locWednesday")
+    static let locThursday = localized("locThursday")
+    static let locFriday = localized("locFriday")
+    static let locSaturday = localized("locSaturday")
+    static let locSunday = localized("locSunday")
+    
+    static let locMondayShort = localized("locMondayShort")
+    static let locTuesdayShort = localized("locTuesdayShort")
+    static let locWednesdayShort = localized("locWednesdayShort")
+    static let locThursdayShort = localized("locThursdayShort")
+    static let locFridayShort = localized("locFridayShort")
+    static let locSaturdayShort = localized("locSaturdayShort")
+    static let locSundayShort = localized("locSundayShort")
+    
     private static func localized(_ key: String) -> String {
         return NSLocalizedString(key, comment: "")
     }

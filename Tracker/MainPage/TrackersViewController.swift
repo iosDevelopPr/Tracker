@@ -48,6 +48,11 @@ final class TrackersViewController: UIViewController {
             textField.layer.cornerRadius = 10
             textField.layer.masksToBounds = true
             textField.leftViewMode = .always
+            //textField.backgroundColor = .trackerGray
+            textField.backgroundColor = .trackerLightGray
+            //textField.tintColor = .trackerForLightGray
+            //textField.tintColor = .trackerLightGray
+            //textField.textColor = .trackerBackgroundBlack
         }
         
         searchBar.setBackgroundImage(UIImage(), for: UIBarPosition.any, barMetrics: UIBarMetrics.default)
@@ -112,15 +117,15 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        filterManager = FilterManager()
+        filterManager?.view = self
+
         setupNavigationBar()
         setupViewController()
         setupGestureRecognizer()
         
         searchBar.delegate = self
         searchBar.searchTextField.delegate = self
-        
-        filterManager = FilterManager()
-        filterManager?.view = self
     }
     
     // MARK: - Actions
@@ -292,9 +297,15 @@ final class TrackersViewController: UIViewController {
 
 extension TrackersViewController: TrackersCollectionDelegate {
     func updateUI() {
-        let hasTrackers = trackersCollectionManager?.hasTrackers() ?? false
+        let hasTrackers = trackersCollectionManager?.hasTrackers ?? false
         let searchText = searchBar.text ?? ""
-        
+
+        if hasTrackers {
+            filterManager?.showFilterButton()
+        } else {
+            filterManager?.hideFilterButton()
+        }
+
         if hasTrackers {
             setCollectionHidden(hidden: false)
             setDizzy(hidden: true)
@@ -316,6 +327,7 @@ extension TrackersViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
 
         let searchText = searchBar.text ?? ""
+        trackersCollectionManager?.setSearchText(searchText: searchText)
         updateUI()
     }
 }
@@ -324,6 +336,8 @@ extension TrackersViewController: UITextFieldDelegate {
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         searchBar.resignFirstResponder()
         searchBar.searchTextField.text = ""
+        
+        trackersCollectionManager?.setSearchText(searchText: "")
         updateUI()
         
         return true
@@ -331,7 +345,17 @@ extension TrackersViewController: UITextFieldDelegate {
 }
 
 extension TrackersViewController: FiltersViewProtocol {
-    func setFilter() {
-        
+    func setFilter(filter: FilterChoice) {
+        if filter == .today {
+            datePicker.date = Date.now
+            dateChanged(datePicker)
+        }
+        if trackersCollectionManager?.getFilter() != filter {
+            trackersCollectionManager?.setFilter(filter: filter)
+        }
+    }
+    
+    func getFilter() -> FilterChoice {
+        return trackersCollectionManager?.getFilter() ?? .all
     }
 }

@@ -46,3 +46,21 @@ unpin = "Открепить";
 edit = "Редактировать";
 delete = "Удалить";
 deleteConfirmation = "Уверены, что хотите удалить трекер?";
+
+everyDay = "Каждый день";
+
+locMonday = "Понедельник";
+locTuesday = "Вторник";
+locWednesday = "Среда";
+locThursday = "Четверг";
+locFriday = "Пятница";
+locSaturday = "Суббота";
+locSunday = "Воскресенье";
+
+locMondayShort = "Пн";
+locTuesdayShort = "Вт";
+locWednesdayShort = "Ср";
+locThursdayShort = "Чт";
+locFridayShort = "Пт";
+locSaturdayShort = "Сб";
+locSundayShort = "Вс";

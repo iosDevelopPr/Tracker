@@ -46,3 +46,21 @@ unpin = "Unpin";
 edit = "Edit";
 delete = "Delete";
 deleteConfirmation = "Are you sure you want to delete the tracker?";
+
+everyDay = "Every day";
+
+locMonday = "Monday";
+locTuesday = "Tuesday";
+locWednesday = "Wednesday";
+locThursday = "Thursday";
+locFriday = "Friday";
+locSaturday = "Saturday";
+locSunday = "Sunday";
+
+locMondayShort = "Mon";
+locTuesdayShort = "Tue";
+locWednesdayShort = "Wed";
+locThursdayShort = "Thu";
+locFridayShort = "Fri";
+locSaturdayShort = "Sat";
+locSundayShort = "Sun";

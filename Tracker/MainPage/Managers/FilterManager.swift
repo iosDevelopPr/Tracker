@@ -20,7 +20,8 @@ final class FilterManager {
     }
     
     @objc private func filterButtonTapped() {
-        let filterVC = FiltersViewController()
+        let filter = view?.getFilter() ?? .all
+        let filterVC = FiltersViewController(filter: filter)
         filterVC.delegate = view
         view?.present(filterVC, animated: true)
     }
