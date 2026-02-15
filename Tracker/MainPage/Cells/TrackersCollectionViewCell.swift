@@ -235,6 +235,13 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     // MARK: - Action
     @objc private func executionButtonTapped() {
         guard let date, date <= Date(), let recordDataProvider else { return }
+        if !recordDataProvider.hasRecord(date: date) {
+            AnalyticsService.shared.logEvent(
+                event: "click",
+                screen: "Main",
+                item: "tracker"
+            )
+        }
         recordDataProvider.toggleRecord(date: date)
     }
 

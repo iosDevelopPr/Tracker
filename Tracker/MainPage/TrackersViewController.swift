@@ -48,11 +48,7 @@ final class TrackersViewController: UIViewController {
             textField.layer.cornerRadius = 10
             textField.layer.masksToBounds = true
             textField.leftViewMode = .always
-            //textField.backgroundColor = .trackerGray
             textField.backgroundColor = .trackerLightGray
-            //textField.tintColor = .trackerForLightGray
-            //textField.tintColor = .trackerLightGray
-            //textField.textColor = .trackerBackgroundBlack
         }
         
         searchBar.setBackgroundImage(UIImage(), for: UIBarPosition.any, barMetrics: UIBarMetrics.default)
@@ -128,8 +124,34 @@ final class TrackersViewController: UIViewController {
         searchBar.searchTextField.delegate = self
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        AnalyticsService.shared.logEvent(
+            event: "open",
+            screen: "Main",
+            item: "screen"
+        )
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        AnalyticsService.shared.logEvent(
+            event: "close",
+            screen: "Main",
+            item: "screen"
+        )
+    }
+    
     // MARK: - Actions
     @objc private func didTapPlusButton(_ sender: Any) {
+        AnalyticsService.shared.logEvent(
+            event: "click",
+            screen: "Main",
+            item: "add_track"
+        )
+        
         let editTrackerPresenter = EditTrackerPresenter()
         let editTrackerViewController = EditTrackerViewController(
             presenter: editTrackerPresenter, tracker: nil, category: nil)
