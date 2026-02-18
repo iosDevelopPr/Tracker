@@ -20,7 +20,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     
     private let emojiLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = .trackerWhite.withAlphaComponent(0.3)
+        label.backgroundColor = .trackerOnlyWhite.withAlphaComponent(0.3)
         label.layer.cornerRadius = 12
         label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -33,7 +33,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .left
-        label.textColor = .trackerWhite
+        label.textColor = .trackerOnlyWhite
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -77,6 +77,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     var editTracker: Binding<Void>?
     var pinToggleTracker: Binding<Void>?
     var deleteTracker: Binding<Void>?
+    
+    private var darkMode: Bool = false
 
     // MARK: - Initialization
     override init(frame: CGRect) {
@@ -90,9 +92,10 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - Configuration
-    func configure(tracker: Tracker, date: Date) {
+    func configure(tracker: Tracker, date: Date, darkMode: Bool) {
         self.tracker = tracker
         self.date = date
+        self.darkMode = darkMode
         
         self.recordDataProvider?.clearDelegate()
         self.recordDataProvider = RecordDataProvider(trackerID: tracker.id, delegate: self)
@@ -250,7 +253,11 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         guard let date, let recordDataProvider = self.recordDataProvider else { return }
         if recordDataProvider.hasRecord(date: date) {
             executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(0.5)
-            executionButton.setImage(UIImage(resource: .done), for: .normal)
+            if darkMode {
+                executionButton.setImage(UIImage(resource: .doneDark), for: .normal)
+            } else {
+                executionButton.setImage(UIImage(resource: .done), for: .normal)
+            }
         }
         else {
             executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(1)

@@ -10,6 +10,11 @@ trackers = "Trackers";
 statistic = "Statistics";
 search = "Search";
 
+bestPeriod = "Best period";
+perfectDays = "Perfect days";
+trackersEnded = "Trackers ended";
+averageValue = "Average per day";
+
 statisticPlaceholder = "Nothing to analyze yet";
 nameFieldMaxLengthLabel = "Limit of 38 characters";
 

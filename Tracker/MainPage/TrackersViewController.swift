@@ -5,12 +5,8 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Elements UI
     private let plusButton: UIButton = {
-        let plusImage: UIImage = .plus
-        
         let button = UIButton()
-        button.setImage(plusImage, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         return button
     } ()
     
@@ -108,11 +104,14 @@ final class TrackersViewController: UIViewController {
     // MARK: - Properties
     private var trackersCollectionManager: TrackersCollectionManager?
     private var filterManager: FilterManager?
+    private(set) var darkMode = false
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupDarkMode()
+
         filterManager = FilterManager()
         filterManager?.view = self
 
@@ -165,6 +164,13 @@ final class TrackersViewController: UIViewController {
     }
 
     // MARK: - Setup UI
+    private func setupDarkMode() {
+        let windowScene = UIApplication.shared
+            .connectedScenes
+            .flatMap({ ($0 as? UIWindowScene)?.windows ?? [] }).first
+        darkMode = windowScene?.traitCollection.userInterfaceStyle == .dark
+    }
+    
     private func setupNavigationBar() {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
@@ -195,6 +201,12 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setupPlusButton() {
+        if darkMode {
+            plusButton.setImage(.plusDark, for: .normal)
+        } else {
+            plusButton.setImage(.plus, for: .normal)
+        }
+        
         plusButton.addTarget(self, action: #selector(didTapPlusButton(_:)), for: .touchUpInside)
         view.addSubview(plusButton)
 

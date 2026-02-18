@@ -10,6 +10,11 @@ trackers = "Трекеры";
 statistic = "Статистика";
 search = "Поиск";
 
+bestPeriod = "Лучший период";
+perfectDays = "Идеальные дни";
+trackersEnded = "Трекеров завершено";
+averageValue = "Среднее значение в день";
+
 statisticPlaceholder = "Анализировать пока нечего";
 nameFieldMaxLengthLabel = "Ограничение 38 символов";
 

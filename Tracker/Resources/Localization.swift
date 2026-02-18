@@ -14,6 +14,11 @@ enum Localization {
     static let statisticTitle = localized("statistic")
     static let searchPlaceholder = localized("search")
     
+    static let statisticBestPeriod = localized("bestPeriod")
+    static let statisticPerfectDays = localized("perfectDays")
+    static let statisticTrackersEnded = localized("trackersEnded")
+    static let statisticAverageValue = localized("averageValue")
+    
     static let statisticPlaceholder = localized("statisticPlaceholder")
     static let nameFieldMaxLengthLabel = localized("nameFieldMaxLengthLabel")
     

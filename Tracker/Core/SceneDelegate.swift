@@ -17,6 +17,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             window?.rootViewController = OnboardingPageViewController()
         }
+        
+        window?.overrideUserInterfaceStyle = .dark
         window?.makeKeyAndVisible()
     }
 }

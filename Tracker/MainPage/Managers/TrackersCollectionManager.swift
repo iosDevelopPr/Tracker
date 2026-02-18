@@ -226,7 +226,7 @@ extension TrackersCollectionManager: UICollectionViewDataSource {
         let tracker = categories[indexPath.section].trackers[indexPath.item]
         let category = trackerDataProvider.getCategoryForTracker(id: tracker.id)
         
-        cell.configure(tracker: tracker, date: picker.date)
+        cell.configure(tracker: tracker, date: picker.date, darkMode: delegate.darkMode)
         
         cell.pinToggleTracker = { [weak self] _ in
             self?.trackerDataProvider.togglePin(tracker: tracker)
