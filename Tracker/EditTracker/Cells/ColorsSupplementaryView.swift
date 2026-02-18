@@ -25,6 +25,7 @@ final class ColorsSupplementaryView: UICollectionReusableView {
     }
     
     private func setupUI() {
+        backgroundColor = .trackerWhite
         addSubview(titleLabel)
 
         NSLayoutConstraint.activate([

@@ -205,8 +205,6 @@ final class StatisticsViewController: UIViewController {
             statisticsView.heightAnchor.constraint(equalToConstant: 420)
         ])
         
-        //--------------------------------------------------
-        
         statisticsView.addSubview(cardBestPeriod)
         
         NSLayoutConstraint.activate([
@@ -237,8 +235,6 @@ final class StatisticsViewController: UIViewController {
         cardBestPeriod.layoutIfNeeded()
         var gradient = getGradient(cardView: cardBestPeriod)
         cardBestPeriod.layer.addSublayer(gradient)
-
-        //------------------------------------------
         
         statisticsView.addSubview(cardPerfectDays)
         
@@ -271,8 +267,6 @@ final class StatisticsViewController: UIViewController {
         gradient = getGradient(cardView: cardPerfectDays)
         cardPerfectDays.layer.addSublayer(gradient)
 
-        //------------------------------------------
-
         statisticsView.addSubview(cardTrackersEnded)
         
         NSLayoutConstraint.activate([
@@ -303,8 +297,6 @@ final class StatisticsViewController: UIViewController {
         cardTrackersEnded.layoutIfNeeded()
         gradient = getGradient(cardView: cardTrackersEnded)
         cardTrackersEnded.layer.addSublayer(gradient)
-
-        //------------------------------------------
 
         statisticsView.addSubview(cardAverageValue)
         

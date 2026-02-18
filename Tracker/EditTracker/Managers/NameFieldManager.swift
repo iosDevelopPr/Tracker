@@ -35,7 +35,7 @@ final class NameFieldManager: NSObject {
         nameField.attributedPlaceholder = NSAttributedString(
             string: placeholderText,
             attributes: [.foregroundColor: UIColor(resource: .trackerForLightGray),
-                         .backgroundColor: UIColor(resource: .trackerLightGray)])
+                         .backgroundColor: UIColor(resource: .trackerWhiteA)])
 
         let paddingView = UIView(
             frame: CGRect(x: 0, y: 0, width: 16,

@@ -8,8 +8,12 @@ final class EmojiSupplementaryView: UICollectionReusableView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        backgroundColor = .trackerWhite
+        
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
+        
         addSubview(titleLabel)
 
         NSLayoutConstraint.activate([

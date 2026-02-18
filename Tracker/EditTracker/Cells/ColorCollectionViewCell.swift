@@ -30,6 +30,8 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupUI() {
+        backgroundColor = .trackerWhite
+        
         contentView.addSubview(colorSquare)
         contentView.layer.cornerRadius = 16
         contentView.layer.borderWidth = 3

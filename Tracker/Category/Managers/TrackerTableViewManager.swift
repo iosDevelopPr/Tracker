@@ -29,6 +29,7 @@ final class TrackerTableViewManager: NSObject {
     }
     
     private func setupTableView() {
+        tableView.separatorColor = .trackerForLightGray
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(
@@ -103,6 +104,10 @@ extension TrackerTableViewManager: UITableViewDataSource {
         let isSelected = viewModel.lastSelectedCategory == category.name
         
         cell.configure(text: category.name, isSelected: isSelected, isFirst: isFirst, isLast: isLast)
+        if isLast {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: cell.bounds.width)
+        }
+
         cell.selectionStyle = .none
         
         cell.editCategory = { [weak self] _ in

@@ -44,7 +44,7 @@ final class TrackersViewController: UIViewController {
             textField.layer.cornerRadius = 10
             textField.layer.masksToBounds = true
             textField.leftViewMode = .always
-            textField.backgroundColor = .trackerLightGray
+            textField.backgroundColor = .trackerSearch
         }
         
         searchBar.setBackgroundImage(UIImage(), for: UIBarPosition.any, barMetrics: UIBarMetrics.default)
@@ -56,7 +56,7 @@ final class TrackersViewController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
-        datePicker.backgroundColor = .trackerLightGray
+        datePicker.backgroundColor = .trackerDatePicker
         datePicker.tintColor = .trackerBackgroundBlack
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
@@ -71,7 +71,8 @@ final class TrackersViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .light)
         label.textAlignment = .center
-        label.backgroundColor = .trackerLightGray
+        label.backgroundColor = .trackerDatePicker
+        label.textColor = .trackerBlack
         label.translatesAutoresizingMaskIntoConstraints = false
         
         label.layer.cornerRadius = 8

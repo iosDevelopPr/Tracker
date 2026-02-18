@@ -46,6 +46,7 @@ final class EditTrackerViewController: UIViewController {
     private let buttonTable: UITableView = {
         let button = UITableView()
         button.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        button.separatorColor = .trackerForLightGray
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

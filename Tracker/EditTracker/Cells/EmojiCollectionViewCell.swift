@@ -42,6 +42,8 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
 
     // MARK: - Setup UI
     private func setupUI() {
+        backgroundColor = .trackerWhite
+        
         contentView.layer.cornerRadius = 16
         contentView.addSubview(emojiLabel)
     }

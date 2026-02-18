@@ -21,9 +21,6 @@ final class StatisticDataProvider {
     }
     
     func isDataExist() -> Bool {
-        return
-            dataStore.trackersEnded() > 0 ||
-            dataStore.recordsAveragePerDay() > 0 ||
-            dataStore.recordsBestPeriod() > 0
+        return dataStore.trackersEnded() > 0
     }
 }

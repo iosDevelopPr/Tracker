@@ -53,6 +53,8 @@ final class TrackersCollectionManager: NSObject {
     }
     
     private func configureCollectionView() {
+        collectionView.backgroundColor = .trackerWhite
+        
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -113,14 +115,11 @@ final class TrackersCollectionManager: NSObject {
     
     func setSearchText(searchText: String) {
         self.searchText = searchText == "" ? nil : searchText
-        //filterAndSearchAction()
-        //self.collectionView.reloadData()
         updateDate(date: picker.date)
     }
     
     func setFilter(filter: FilterChoice) {
         self.filter = filter
-        //filterAndSearchAction()
         updateDate(date: picker.date)
     }
     

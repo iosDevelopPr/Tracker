@@ -25,10 +25,12 @@ final class ColorCollectionManager: NSObject {
     }
     
     private func configureCollectionView() {
+        collectionView.backgroundColor = .trackerWhite
+        
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.allowsMultipleSelection = false
+        collectionView.allowsMultipleSelection = true
         collectionView.register(
             ColorCollectionViewCell.self,
             forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifier

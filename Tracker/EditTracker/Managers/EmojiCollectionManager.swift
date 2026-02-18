@@ -24,7 +24,9 @@ final class EmojiCollectionManager: NSObject {
     }
     
     private func configureCollectionView() {
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .trackerWhite
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = true
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.allowsMultipleSelection = true
@@ -54,11 +56,11 @@ extension EmojiCollectionManager: UICollectionViewDelegate {
         didSelectItemAt indexPath: IndexPath
     ) {
         collectionView.visibleCells.forEach {
-            $0.contentView.backgroundColor = .clear
+            $0.contentView.backgroundColor = .trackerWhite
         }
         
         if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.contentView.backgroundColor = .trackerLightGray
+            cell.contentView.backgroundColor = .trackerGrayEmoji
         }
         
         presenter.updateEmoji(emoji: Emoji.allCases[indexPath.row])
@@ -69,7 +71,7 @@ extension EmojiCollectionManager: UICollectionViewDelegate {
         didDeselectItemAt indexPath: IndexPath
     ) {
         if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.contentView.backgroundColor = .clear
+            cell.contentView.backgroundColor = .trackerWhite
         }
         
         presenter.updateEmoji(emoji: nil)
@@ -97,7 +99,7 @@ extension EmojiCollectionManager: UICollectionViewDataSource {
         
         if let selectedEmoji, let index = Emoji.allCases.firstIndex(of: selectedEmoji) {
             if indexPath.row == index {
-                cell.contentView.backgroundColor = .trackerLightGray
+                cell.contentView.backgroundColor = .trackerGrayEmoji
                 self.selectedEmoji = nil
             }
         }
