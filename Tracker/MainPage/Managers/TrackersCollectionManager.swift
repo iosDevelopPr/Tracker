@@ -144,7 +144,6 @@ final class TrackersCollectionManager: NSObject {
             }
         }
 
-        // ------------------------------------
         guard let searchText, !searchText.isEmpty else { return }
         
         categories = categories.compactMap { category in
@@ -274,8 +273,6 @@ extension TrackersCollectionManager: UICollectionViewDataSource {
 
 extension TrackersCollectionManager: DataProviderDelegate {
     func didUpdate() {
-        //DispatchQueue.main.async {
-            self.updateDate(date: self.picker.date)
-        //}
+        self.updateDate(date: self.picker.date)
     }
 }

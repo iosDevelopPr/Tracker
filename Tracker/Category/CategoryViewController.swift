@@ -137,14 +137,10 @@ final class CategoryViewController: UIViewController {
         
         let viewModel = CategoryViewModel()
         viewModel.listCategoryEmpty = { [weak self] isEmpty in
-            //DispatchQueue.main.async {
-                self?.listCategoryEmpty(isEmpty: isEmpty)
-            //}
+            self?.listCategoryEmpty(isEmpty: isEmpty)
         }
         viewModel.categorySelected = { [weak self] selectedCategory in
-            //DispatchQueue.main.async {
-                self?.categorySelected(selectedCategory: selectedCategory)
-            //}
+            self?.categorySelected(selectedCategory: selectedCategory)
         }
         
         trackerTableViewManager = TrackerTableViewManager(

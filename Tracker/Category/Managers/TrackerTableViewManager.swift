@@ -19,9 +19,7 @@ final class TrackerTableViewManager: NSObject {
         super.init()
         
         self.viewModel.updateTableView = { [weak self] _ in
-            //DispatchQueue.main.async {
-                self?.updateTableView()
-            //}
+            self?.updateTableView()
         }
         
         self.setupTableView()

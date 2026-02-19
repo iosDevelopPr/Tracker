@@ -280,11 +280,9 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
 extension TrackersCollectionViewCell: RecordDataProviderDelegate {
     func recordsDidUpdate(id: UUID) {
         guard id == self.tracker?.id else { return }
-        //DispatchQueue.main.async {
-            self.setExecutionLabel()
-            self.setExecutionButton()
-            self.setPinImage()
-        //}
+        self.setExecutionLabel()
+        self.setExecutionButton()
+        self.setPinImage()
     }
 }
 
