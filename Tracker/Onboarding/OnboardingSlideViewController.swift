@@ -10,7 +10,7 @@ final class OnboardingSlideViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle(Localization.onboardingButton, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .trackerBackgroundBlack
+        button.backgroundColor = .trackerBlack
         button.layer.cornerRadius = 16
         return button
     }()
@@ -19,6 +19,7 @@ final class OnboardingSlideViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 26, weight: .bold)
+        label.textColor = .trackerBlack
         label.numberOfLines = 0
         label.textAlignment = .center
         return label

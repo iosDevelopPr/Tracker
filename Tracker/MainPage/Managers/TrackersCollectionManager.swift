@@ -53,6 +53,7 @@ final class TrackersCollectionManager: NSObject {
     }
     
     private func configureCollectionView() {
+        collectionView.contentInset.bottom = heightCategory
         collectionView.backgroundColor = .trackerWhite
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -232,18 +233,18 @@ extension TrackersCollectionManager: UICollectionViewDataSource {
         }
         cell.editTracker = { [weak self] _ in
             AnalyticsService.shared.logEvent(
-                event: "click",
-                screen: "Main",
-                item: "edit"
+                event: .click,
+                screen: .Main,
+                item: .edit
             )
 
             self?.editTracker(tracker: tracker, category: category)
         }
         cell.deleteTracker = { [weak self] _ in
             AnalyticsService.shared.logEvent(
-                event: "click",
-                screen: "Main",
-                item: "delete"
+                event: .click,
+                screen: .Main,
+                item: .delete
             )
             
             self?.showDeleteConfirmation(tracker: tracker)

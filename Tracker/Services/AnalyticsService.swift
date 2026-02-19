@@ -6,11 +6,11 @@ final class AnalyticsService {
     
     private init() {}
     
-    func logEvent(event: String, screen: String, item: String) {
+    func logEvent(event: EventAnalytics, screen: ScreenAnalytics, item: ItemAnalytics) {
         let eventParams: [String: Any] = [
-            "event": event,
-            "screen": screen,
-            "item": item
+            "event": event.rawValue,
+            "screen": screen.rawValue,
+            "item": item.rawValue
         ]
         
         AppMetrica.reportEvent(name: "user_interaction", parameters: eventParams)

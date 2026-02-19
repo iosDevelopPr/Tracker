@@ -53,7 +53,7 @@ final class OnboardingPageViewController: UIPageViewController {
     private func setupPageControl() {
         guard let superview = view.superview else { return }
         
-        let pageControlColor: UIColor = .black
+        let pageControlColor: UIColor = .trackerBlack
         pageControl.pageIndicatorTintColor = pageControlColor.withAlphaComponent(0.3)
         pageControl.currentPageIndicatorTintColor = pageControlColor
         

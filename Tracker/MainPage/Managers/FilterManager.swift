@@ -21,9 +21,9 @@ final class FilterManager {
     
     @objc private func filterButtonTapped() {
         AnalyticsService.shared.logEvent(
-            event: "click",
-            screen: "Main",
-            item: "filter"
+            event: .click,
+            screen: .Main,
+            item: .filter
         )
 
         let filter = view?.getFilter() ?? .all

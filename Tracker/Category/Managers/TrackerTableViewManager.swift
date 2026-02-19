@@ -81,6 +81,14 @@ extension TrackerTableViewManager: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.categorySelected(indexPath: indexPath)
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        }
+    }
 }
 
 extension TrackerTableViewManager: UITableViewDataSource {
@@ -104,10 +112,6 @@ extension TrackerTableViewManager: UITableViewDataSource {
         let isSelected = viewModel.lastSelectedCategory == category.name
         
         cell.configure(text: category.name, isSelected: isSelected, isFirst: isFirst, isLast: isLast)
-        if isLast {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: cell.bounds.width)
-        }
-
         cell.selectionStyle = .none
         
         cell.editCategory = { [weak self] _ in

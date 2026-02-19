@@ -33,6 +33,7 @@ final class CategoryViewController: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .trackerWhite
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        tableView.separatorColor = .trackerForLightGray
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     } ()

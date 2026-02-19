@@ -128,9 +128,9 @@ final class TrackersViewController: UIViewController {
         super.viewDidAppear(animated)
         
         AnalyticsService.shared.logEvent(
-            event: "open",
-            screen: "Main",
-            item: "screen"
+            event: .open,
+            screen: .Main,
+            item: .screen
         )
     }
     
@@ -138,18 +138,18 @@ final class TrackersViewController: UIViewController {
         super.viewDidDisappear(animated)
         
         AnalyticsService.shared.logEvent(
-            event: "close",
-            screen: "Main",
-            item: "screen"
+            event: .close,
+            screen: .Main,
+            item: .screen
         )
     }
     
     // MARK: - Actions
     @objc private func didTapPlusButton(_ sender: Any) {
         AnalyticsService.shared.logEvent(
-            event: "click",
-            screen: "Main",
-            item: "add_track"
+            event: .click,
+            screen: .Main,
+            item: .add_track
         )
         
         let editTrackerPresenter = EditTrackerPresenter()

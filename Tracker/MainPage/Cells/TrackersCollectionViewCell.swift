@@ -240,9 +240,9 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         guard let date, date <= Date(), let recordDataProvider else { return }
         if !recordDataProvider.hasRecord(date: date) {
             AnalyticsService.shared.logEvent(
-                event: "click",
-                screen: "Main",
-                item: "tracker"
+                event: .click,
+                screen: .Main,
+                item: .tracker
             )
         }
         recordDataProvider.toggleRecord(date: date)

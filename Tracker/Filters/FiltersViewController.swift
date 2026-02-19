@@ -107,9 +107,9 @@ extension FiltersViewController: UITableViewDataSource {
 
         switch identifier {
         case Localization.allTrackers:
-            cell.configure(title: identifier, isSelected: filter == .all)
+            cell.configure(title: identifier, isSelected: false)
         case Localization.trackersForToday:
-            cell.configure(title: identifier, isSelected: filter == .today)
+            cell.configure(title: identifier, isSelected: false)
         case Localization.finished:
             cell.configure(title: identifier, isSelected: filter == .finished)
         case Localization.notFinished:
