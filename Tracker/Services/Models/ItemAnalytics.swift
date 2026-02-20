@@ -5,5 +5,5 @@ enum ItemAnalytics: String, Codable {
     case edit
     case delete
     case screen
-    case add_track
+    case addTrack
 }

@@ -233,7 +233,7 @@ extension TrackersCollectionManager: UICollectionViewDataSource {
         cell.editTracker = { [weak self] _ in
             AnalyticsService.shared.logEvent(
                 event: .click,
-                screen: .Main,
+                screen: .main,
                 item: .edit
             )
 
@@ -242,7 +242,7 @@ extension TrackersCollectionManager: UICollectionViewDataSource {
         cell.deleteTracker = { [weak self] _ in
             AnalyticsService.shared.logEvent(
                 event: .click,
-                screen: .Main,
+                screen: .main,
                 item: .delete
             )
             

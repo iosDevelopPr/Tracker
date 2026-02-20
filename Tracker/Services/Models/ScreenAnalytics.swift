@@ -1,4 +1,4 @@
 
 enum ScreenAnalytics: String, Codable {
-    case Main
+    case main
 }

@@ -241,7 +241,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         if !recordDataProvider.hasRecord(date: date) {
             AnalyticsService.shared.logEvent(
                 event: .click,
-                screen: .Main,
+                screen: .main,
                 item: .tracker
             )
         }
