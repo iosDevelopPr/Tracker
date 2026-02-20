@@ -1,4 +1,0 @@
-
-protocol TrackersPresenterDelegate {
-    func updateUI()
-}

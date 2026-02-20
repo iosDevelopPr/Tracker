@@ -7,7 +7,7 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Elements UI
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
+        label.text = Localization.scheduleTitle
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         return label
@@ -16,6 +16,7 @@ final class ScheduleViewController: UIViewController {
     private let scheduleTable: UITableView = {
         let tableView = UITableView()
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        tableView.separatorColor = .trackerForLightGray
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         return tableView
@@ -23,7 +24,7 @@ final class ScheduleViewController: UIViewController {
     
     private let preparedButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(Localization.readyButton, for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.backgroundColor = .trackerBackgroundBlack
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -35,7 +36,7 @@ final class ScheduleViewController: UIViewController {
     
     // MARK: - Properties
     private var selectedDays: Set<Schedule>
-    private var presenter: NewTrackerPresenterProtocol
+    private var presenter: EditTrackerPresenterProtocol
     
     private let heightTableCell: CGFloat = 75
 
@@ -45,7 +46,7 @@ final class ScheduleViewController: UIViewController {
         setupUI()
     }
     
-    init(presenter: NewTrackerPresenterProtocol) {
+    init(presenter: EditTrackerPresenterProtocol) {
         self.presenter = presenter
         self.selectedDays = presenter.trackerForPresenter.schedule ?? []
         super.init(nibName: nil, bundle: nil)
@@ -142,9 +143,9 @@ extension ScheduleViewController: UITableViewDataSource {
     private func configureCell(_ cell: UITableViewCell, for indexPath: IndexPath) {
         let schedule = Schedule.allCases[indexPath.row]
 
-        cell.textLabel?.text = schedule.rawValue
+        cell.textLabel?.text = schedule.localized
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        cell.backgroundColor = .systemGray6
+        cell.backgroundColor = .trackerLightGray
         cell.selectionStyle = .none
 
         let switchView = createSwitch(for: indexPath)

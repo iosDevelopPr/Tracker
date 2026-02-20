@@ -20,7 +20,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     
     private let emojiLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = .trackerWhite.withAlphaComponent(0.3)
+        label.backgroundColor = .trackerOnlyWhite.withAlphaComponent(0.3)
         label.layer.cornerRadius = 12
         label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -33,11 +33,18 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .left
-        label.textColor = .trackerWhite
+        label.textColor = .trackerOnlyWhite
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
+    } ()
+    
+    private let pinImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .pin
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     } ()
     
     private let footerView: UIView = {
@@ -67,6 +74,12 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     private var date: Date?
     private var recordDataProvider: RecordDataProvider?
     
+    var editTracker: Binding<Void>?
+    var pinToggleTracker: Binding<Void>?
+    var deleteTracker: Binding<Void>?
+    
+    private var darkMode: Bool = false
+
     // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -79,9 +92,10 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - Configuration
-    func configure(tracker: Tracker, date: Date) {
+    func configure(tracker: Tracker, date: Date, darkMode: Bool) {
         self.tracker = tracker
         self.date = date
+        self.darkMode = darkMode
         
         self.recordDataProvider?.clearDelegate()
         self.recordDataProvider = RecordDataProvider(trackerID: tracker.id, delegate: self)
@@ -89,6 +103,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setupData()
         setExecutionLabel()
         setExecutionButton()
+        setPinImage()
     }
 
     override func prepareForReuse() {
@@ -110,6 +125,9 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setupFooterView()
         setupRecordLabel()
         setupRecordButton()
+        
+        setupContextMenu()
+        setupPinIcon()
     }
     
     private func setupData() {
@@ -201,9 +219,32 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setExecutionButton()
     }
     
+    private func setupPinIcon() {
+        cardView.addSubview(pinImage)
+        
+        NSLayoutConstraint.activate([
+            pinImage.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 18),
+            pinImage.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
+            pinImage.widthAnchor.constraint(equalToConstant: 8),
+            pinImage.heightAnchor.constraint(equalToConstant: 12)
+        ])
+    }
+    
+    private func setupContextMenu() {
+        let interactions = UIContextMenuInteraction(delegate: self)
+        cardView.addInteraction(interactions)
+    }
+    
     // MARK: - Action
     @objc private func executionButtonTapped() {
         guard let date, date <= Date(), let recordDataProvider else { return }
+        if !recordDataProvider.hasRecord(date: date) {
+            AnalyticsService.shared.logEvent(
+                event: .click,
+                screen: .main,
+                item: .tracker
+            )
+        }
         recordDataProvider.toggleRecord(date: date)
     }
 
@@ -212,7 +253,11 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         guard let date, let recordDataProvider = self.recordDataProvider else { return }
         if recordDataProvider.hasRecord(date: date) {
             executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(0.5)
-            executionButton.setImage(UIImage(resource: .done), for: .normal)
+            if darkMode {
+                executionButton.setImage(UIImage(resource: .doneDark), for: .normal)
+            } else {
+                executionButton.setImage(UIImage(resource: .done), for: .normal)
+            }
         }
         else {
             executionButton.backgroundColor = executionButton.backgroundColor?.withAlphaComponent(1)
@@ -223,33 +268,55 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
 
     private func setExecutionLabel() {
         guard let recordDataProvider = self.recordDataProvider else { return }
-        
-        let countExecutions = recordDataProvider.recordCount
-        var text: String = ""
-        
-        if countExecutions >= 11 && countExecutions <= 20 {
-            text = "дней"
-        } else {
-            let remainderValue = countExecutions % 10
-            switch remainderValue {
-            case 1:
-                text = "день"
-            case 2, 3, 4:
-                text = "дня"
-            default:
-                text = "дней"
-            }
-        }
-        executionLabel.text = "\(countExecutions) \(text)"
+        executionLabel.text = Helpers.countDays(countDays: recordDataProvider.recordCount)
+    }
+    
+    private func setPinImage() {
+        let isPinned = self.tracker?.isPinned ?? false
+        pinImage.isHidden = !isPinned
     }
 }
 
 extension TrackersCollectionViewCell: RecordDataProviderDelegate {
     func recordsDidUpdate(id: UUID) {
         guard id == self.tracker?.id else { return }
-        DispatchQueue.main.async {
-            self.setExecutionLabel()
-            self.setExecutionButton()
+        self.setExecutionLabel()
+        self.setExecutionButton()
+        self.setPinImage()
+    }
+}
+
+extension TrackersCollectionViewCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        let menu = UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            let isPinned = self.tracker?.isPinned ?? false
+            let pinAction = UIAction(
+                title: isPinned ? Localization.unpin : Localization.pin,
+                handler: { _ in
+                    self.pinToggleTracker?(())
+                }
+            )
+            let editAction = UIAction(
+                title: Localization.edit,
+                handler: { _ in
+                    self.editTracker?(())
+                }
+            )
+            let deleteAction = UIAction(
+                title: Localization.delete,
+                attributes: .destructive,
+                handler: { _ in
+                    self.deleteTracker?(())
+                }
+            )
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
         }
+        return menu
     }
 }

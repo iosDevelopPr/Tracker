@@ -1,0 +1,71 @@
+
+onboardingButton = "These are technologies!";
+onboardingFirstPage = "Track only what\nyou want";
+onboardingSecondPage = "Even if it's not\nliters of water and yoga";
+
+newTrackerTitle = "New Habit";
+editTrackerTitle = "Habit editing";
+
+trackers = "Trackers";
+statistic = "Statistics";
+search = "Search";
+
+bestPeriod = "Best period";
+perfectDays = "Perfect days";
+trackersEnded = "Trackers ended";
+averageValue = "Average per day";
+
+statisticPlaceholder = "Nothing to analyze yet";
+nameFieldMaxLengthLabel = "Limit of 38 characters";
+
+trackerListPlaceholder = "What do we track?";
+badSearchPlaceholder = "Nothing found";
+categoryListPlaceholder = "Habits and events can\nbe grouped by meaning";
+trackerPlaceholder = "Enter tracker name";
+categoryPlaceholder = "Enter category name";
+
+category = "Category";
+schedule = "Schedule";
+
+cancel = "Cancel";
+create = "Create";
+save = "Save";
+ready = "Ready";
+addCategory = "Add Category";
+newCategory = "New Category";
+editCategory = "Edit Category";
+
+color = "Color";
+emoji = "Emoji";
+
+filters = "Filters";
+
+allTrackers = "All trackers";
+trackersForToday = "Trackers for today";
+finished = "Finished";
+notFinished = "Not finished";
+
+pin = "Pin";
+pinned = "Pinned";
+unpin = "Unpin";
+edit = "Edit";
+delete = "Delete";
+deleteConfirmation = "Are you sure you want to delete the tracker?";
+
+everyDay = "Every day";
+
+locMonday = "Monday";
+locTuesday = "Tuesday";
+locWednesday = "Wednesday";
+locThursday = "Thursday";
+locFriday = "Friday";
+locSaturday = "Saturday";
+locSunday = "Sunday";
+
+locMondayShort = "Mon";
+locTuesdayShort = "Tue";
+locWednesdayShort = "Wed";
+locThursdayShort = "Thu";
+locFridayShort = "Fri";
+locSaturdayShort = "Sat";
+locSundayShort = "Sun";

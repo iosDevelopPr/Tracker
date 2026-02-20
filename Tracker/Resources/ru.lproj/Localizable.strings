@@ -1,0 +1,71 @@
+
+onboardingButton = "Вот это технологии!";
+onboardingFirstPage = "Отслеживайте только то,\nчто хотите";
+onboardingSecondPage = "Даже если это\nне литры воды и йога";
+
+newTrackerTitle = "Новая привычка";
+editTrackerTitle = "Редактирование привычки";
+
+trackers = "Трекеры";
+statistic = "Статистика";
+search = "Поиск";
+
+bestPeriod = "Лучший период";
+perfectDays = "Идеальные дни";
+trackersEnded = "Трекеров завершено";
+averageValue = "Среднее значение в день";
+
+statisticPlaceholder = "Анализировать пока нечего";
+nameFieldMaxLengthLabel = "Ограничение 38 символов";
+
+trackerListPlaceholder = "Что будем отслеживать?";
+badSearchPlaceholder = "Ничего не найдено";
+categoryListPlaceholder = "Привычки и события можно\nобъединить по смыслу";
+trackerPlaceholder = "Введите название трекера";
+categoryPlaceholder = "Введите название категории";
+
+category = "Категория";
+schedule = "Расписание";
+
+cancel = "Отменить";
+create = "Создать";
+save = "Сохранить";
+ready = "Готово";
+addCategory = "Добавить категорию";
+newCategory = "Новая категория";
+editCategory = "Редактирование категории";
+
+color = "Цвет";
+emoji = "Emoji";
+
+filters = "Фильтры";
+
+allTrackers = "Все трекеры";
+trackersForToday = "Трекеры на сегодня";
+finished = "Завершенные";
+notFinished = "Не завершенные";
+
+pin = "Закрепить";
+pinned = "Закрепленные";
+unpin = "Открепить";
+edit = "Редактировать";
+delete = "Удалить";
+deleteConfirmation = "Уверены, что хотите удалить трекер?";
+
+everyDay = "Каждый день";
+
+locMonday = "Понедельник";
+locTuesday = "Вторник";
+locWednesday = "Среда";
+locThursday = "Четверг";
+locFriday = "Пятница";
+locSaturday = "Суббота";
+locSunday = "Воскресенье";
+
+locMondayShort = "Пн";
+locTuesdayShort = "Вт";
+locWednesdayShort = "Ср";
+locThursdayShort = "Чт";
+locFridayShort = "Пт";
+locSaturdayShort = "Сб";
+locSundayShort = "Вс";

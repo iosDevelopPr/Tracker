@@ -10,9 +10,9 @@ final class TabBarController: UITabBarController {
         var title: String {
             switch self {
             case .trackers:
-                return "Трекеры"
+                return Localization.trackersTitle
             case .statistics:
-                return "Статистика"
+                return Localization.statisticTitle
             }
         }
         

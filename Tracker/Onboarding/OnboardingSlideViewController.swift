@@ -8,9 +8,9 @@ final class OnboardingSlideViewController: UIViewController {
     private let button = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(Localization.onboardingButton, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .trackerBackgroundBlack
+        button.backgroundColor = .trackerBlack
         button.layer.cornerRadius = 16
         return button
     }()
@@ -19,6 +19,7 @@ final class OnboardingSlideViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 26, weight: .bold)
+        label.textColor = .trackerBlack
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -78,7 +79,7 @@ final class OnboardingSlideViewController: UIViewController {
 
     @objc
     private func buttonPressed() {
-        UserDefaults.standard.set(true, forKey: "notRunOnboarding")
+        UserDefaultsService.shared.isNotRunOnboarding = true
 
         guard let window = UIApplication.shared.windows.first else { return }
 

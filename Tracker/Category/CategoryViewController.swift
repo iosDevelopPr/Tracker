@@ -12,7 +12,7 @@ final class CategoryViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = Localization.categoryTitle
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -21,7 +21,7 @@ final class CategoryViewController: UIViewController {
     
     private let textLabel: UILabel = {
         let Label = UILabel()
-        Label.text = "Привычки и события можно\nобъединить по смыслу"
+        Label.text = Localization.categoryListPlaceholder
         Label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         Label.textAlignment = .center
         Label.numberOfLines = 2
@@ -33,13 +33,14 @@ final class CategoryViewController: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .trackerWhite
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        tableView.separatorColor = .trackerForLightGray
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     } ()
     
     private let createButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(Localization.addCategoryButton, for: .normal)
         button.setTitleColor(.trackerWhite, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .trackerBackgroundBlack
@@ -50,11 +51,11 @@ final class CategoryViewController: UIViewController {
         return button
     } ()
     
-    private let presenter: NewTrackerPresenterProtocol
+    private let presenter: EditTrackerPresenterProtocol
     private var selectedCategory: String?
     private var trackerTableViewManager: TrackerTableViewManager?
     
-    init(presenter: NewTrackerPresenterProtocol, selectedCategory: String?) {
+    init(presenter: EditTrackerPresenterProtocol, selectedCategory: String?) {
         self.presenter = presenter
         self.selectedCategory = selectedCategory
         
@@ -87,8 +88,9 @@ final class CategoryViewController: UIViewController {
         view.addSubview(titleLabel)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 24),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 17),
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 49)
         ])
     }
 
@@ -135,14 +137,10 @@ final class CategoryViewController: UIViewController {
         
         let viewModel = CategoryViewModel()
         viewModel.listCategoryEmpty = { [weak self] isEmpty in
-            DispatchQueue.main.async {
-                self?.listCategoryEmpty(isEmpty: isEmpty)
-            }
+            self?.listCategoryEmpty(isEmpty: isEmpty)
         }
         viewModel.categorySelected = { [weak self] selectedCategory in
-            DispatchQueue.main.async {
-                self?.categorySelected(selectedCategory: selectedCategory)
-            }
+            self?.categorySelected(selectedCategory: selectedCategory)
         }
         
         trackerTableViewManager = TrackerTableViewManager(
@@ -150,17 +148,24 @@ final class CategoryViewController: UIViewController {
             selectedCategory: selectedCategory,
             viewModel: viewModel
         )
+        
+        trackerTableViewManager?.viewPresenter = { [weak self] viewForPresent in
+            self?.present(viewForPresent, animated: true)
+        }
     }
 
     @objc private func createButtonTapped() {
-        let createCategoryViewController = NewCategoryViewController()
+        let createCategoryViewController = EditCategoryViewController(nameCategory: nil)
         createCategoryViewController.modalPresentationStyle = .pageSheet
         present(createCategoryViewController, animated: true)
     }
     
-    func categorySelected(selectedCategory: TrackerCategory) {
-        presenter.updateCategory(category: selectedCategory.name)
-        dismiss(animated: true)
+    func categorySelected(selectedCategory: TrackerCategory?) {
+        let selectedName = selectedCategory?.name
+        presenter.updateCategory(category: selectedName)
+        if selectedName != nil {
+            dismiss(animated: true)
+        }
     }
     
     func listCategoryEmpty(isEmpty: Bool) {
